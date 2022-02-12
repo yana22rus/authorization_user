@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{% for cat,msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{%endfor%}
+<h1>Регистрация в системе</h1>
+<form method="POST">
+
+<p><input name="login" placeholder="Введите логин"></p>
+<p><input name="email" placeholder="Введите email"></p>
+<p><input name="password" placeholder="Введите пароль" type="password"></p>
+    <input type="submit" value="Сохранить">
+</form>
+
+</body>
+</html>
