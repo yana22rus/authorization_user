@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block sidebar %}
+
+{% for m in side_bar %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<p>Заголовок <input type="text"></p>
+<p>Подзаголовок <input type="text"></p>
+<p>Содержимое <textarea></textarea></p>
+
+
+
+
+
+{% endblock %}

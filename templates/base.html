@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h4><a href="{{ url_for('admin') }}">Администирование</a> <a href="{{ url_for('main') }}">Центральный сайт</a> <a href="{{ url_for('index') }}">Перейти к сайту</a> <a href="{{ url_for('logout') }}">Выйти</a></h4>
+
+<p>Меню</p>
+
+    <div id="sidebar">
+        {% block sidebar %}
+	<h2>Левая панель</h2>
+        {% endblock%}
+	</div>
+
+    <div id="container">
+
+
+    <div id="content">
+        {% block content %}
+	<h2>Основной контент страницы</h2>
+        {% endblock%}
+	</div>
+    </div>
+
+
+
+</body>
+</html>

@@ -1,22 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
+{% extends 'base.html' %}
+{% block content %}
 {% for cat,msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
 {%endfor%}
-<h1>Регистрация в системе</h1>
-<form method="POST">
+<h5>Регистрация в системе</h5>
+<form method="POST" class="form-contact">
+{{form.hidden_tag()}}
+    {% for x in form if x.name not in ['csrf_token','submit'] -%}
+    <p>{{ x.label() }}
+    {% if x.errors %}
+        {{ x(class="invalid") }}
+        <span class="invalid-feedback">
+        {% for e in x.errors %}
+        {{e}}
+        {% endfor %}
+        </span>
+        {% else%}
+        {{x()}}
+        {% endif%}
+        {% endfor %}
+    </p>
 
-<p><input name="login" placeholder="Введите логин"></p>
-<p><input name="email" placeholder="Введите email"></p>
-<p><input name="password" placeholder="Введите пароль" type="password"></p>
-    <input type="submit" value="Сохранить">
+    <p>{{form.submit()}}</p>
+
 </form>
-
-</body>
-</html>
+{% endblock %}

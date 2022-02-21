@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+{% for m in side_bar %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+<h4>Логин Дата авторизации</h4>
+{% for item in items %}
+<p><b>{{ item.login }}</b> <i>{{ item.time }}</i></p>
+{% endfor %}
+{% endblock %}

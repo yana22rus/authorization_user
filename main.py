@@ -3,7 +3,7 @@ from flask import Flask,render_template,request,redirect,flash,url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin,login_required,login_user,logout_user
 from werkzeug.security import generate_password_hash,check_password_hash
-
+from forms import LoginForm
 
 app = Flask(__name__)
 app.secret_key = "key"
@@ -32,6 +32,16 @@ class Users(db.Model,UserMixin):
 
 login_manager = LoginManager(app)
 
+class User_auth_log(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.String, nullable=True)
+    login = db.Column(db.String, nullable=True)
+
+
+
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -39,15 +49,16 @@ def load_user(user_id):
 
 
 @app.route("/")
+@app.route("/index")
 def index():
 
-    return render_template("index.html")
+    return render_template("sidebars.html")
 
-@app.route("/qwerty")
+@app.route("/admin_panel")
 @login_required
-def secret_page():
+def admin_panel():
 
-    return "secret_page"
+    return render_template("base.html")
 
 
 
@@ -65,28 +76,35 @@ def login():
 
             login_user(user)
 
-            return redirect("/qwerty")
+            user_auth_log = User_auth_log(login=login,time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+            db.session.add(user_auth_log)
+            db.session.flush()
+            db.session.commit()
+
+            return redirect(url_for("admin_panel"))
 
 
     return render_template("page_login.html")
 
 
 @app.route("/registration",methods=["GET","POST"])
+@login_required
 def registration():
 
-    if request.method == "POST":
+    form = LoginForm()
 
-        hash = generate_password_hash(request.form["password"])
+    if form.validate_on_submit():
+
+        hash = generate_password_hash(form.password.data)
 
         new_user = Users(
 
-            login = request.form["login"],
-            email = request.form["email"],
-            password = hash,
-            time_registration = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        login = form.login.data,
+        email = form.email.data,
+        password = hash,
+        time_registration = datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-
-        )
 
         db.session.add(new_user)
         db.session.flush()
@@ -94,15 +112,74 @@ def registration():
 
         flash("Вы успешно зарегистрированы")
 
-    return render_template("page_registration.html")
+        return render_template("page_registration.html", side_bar=side_bar, form=form)
+
+
+    return render_template("page_registration.html",side_bar=side_bar,form=form)
+
+side_bar = [{"name":"Пользователи","url":"users"},{"name":"Роли","url":"role"},{"name":"Права доступа","url":"permission"},{"name":"Логи авторизации","url":"logs_authorization"}]
+
+@app.route("/admin")
+@login_required
+def admin():
+
+    return render_template("admin.html",side_bar=side_bar)
+
+@app.route("/logs_authorization")
+@login_required
+def logs_authorization():
+
+    return render_template("logs_authorization.html", side_bar=side_bar, items=User_auth_log.query.all())
 
 
 @app.route("/logout",methods=["GET","POST"])
+@login_required
 def logout():
 
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
+@app.route("/users",methods=["GET","POST"])
+@login_required
+def users():
+
+
+    if request.method == "POST":
+
+
+        d = request.form.keys()
+        id,*b= d
+
+        my_data = Users.query.get(id)
+        db.session.delete(my_data)
+        db.session.commit()
+
+        return render_template("users.html",side_bar=side_bar,items=Users.query.all())
+
+    return render_template("users.html",side_bar=side_bar,items=Users.query.all())
+
+side_bar_main = [{"name":"Новости","url":"news"},{"name":"Документы","url":"document"},{"name":"Опрос","url":"survey"},
+                 {"name":"Структура","url":"structure"},{"name":"Теги новостей","url":"tag_news"},
+                 {"name":"Теги документов","url":"tag_news"},{"name":"Фоторепортажи","url":"photo_report"},
+                 {"name":"Видеорепортажи","url":"video_report"},{"name":"Список опечаток","url":"typo_repor"},
+                 ]
+
+@app.route("/main")
+@login_required
+def main():
+    return render_template("main.html",side_bar_main=side_bar_main)
+
+@app.route("/news")
+@login_required
+def news():
+
+    return render_template("news.html",side_bar_main=side_bar_main)
+
+@app.route("/create_news")
+@login_required
+def create_news():
+
+    return render_template("create_news.html",side_bar_main=side_bar_main)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+
+{% for m in side_bar %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<button onclick="window.location.href = '{{ url_for('registration') }}';">Создать нового пользователя</button>
+
+<h4>Список пользователей</h4>
+<form method="POST">
+{% for item in items %}
+<p>{{ item.login }}
+<input type="submit" value="Удалить" name="{{ item.id }}">
+    {% endfor %}
+</p>
+</form>
+
+
+
+{% endblock %}
