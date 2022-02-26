@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+
+{% for m in side_bar %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+
+<h4>Редактирование пользователя</h4>
+
+<form method="POST">
+
+
+
+    <p>
+        <input type="text" value="{{q.login}}">
+
+    </p>
+        <input type="text" value="{{q.email}}">
+
+     <p>
+
+    </p>
+
+    <input type="submit">
+
+
+</form>
+
+
+{% endblock %}

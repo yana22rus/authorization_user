@@ -50,6 +50,7 @@ def load_user(user_id):
 
 @app.route("/")
 @app.route("/index")
+@login_required
 def index():
 
     return render_template("sidebars.html")
@@ -112,10 +113,26 @@ def registration():
 
         flash("Вы успешно зарегистрированы")
 
-        return render_template("page_registration.html", side_bar=side_bar, form=form)
+
+        return redirect(url_for("registration"))
 
 
     return render_template("page_registration.html",side_bar=side_bar,form=form)
+
+@app.route("/update_user/<int:user_id>",methods=["GET","POST"])
+@login_required
+def update_user(user_id):
+
+    q = Users.query.filter_by(id=user_id).first()
+
+    if request.method == "POST":
+
+        pass
+
+
+    return render_template("edit_user.html",side_bar=side_bar,q=q)
+
+
 
 side_bar = [{"name":"Пользователи","url":"users"},{"name":"Роли","url":"role"},{"name":"Права доступа","url":"permission"},{"name":"Логи авторизации","url":"logs_authorization"}]
 
@@ -154,9 +171,9 @@ def users():
         db.session.delete(my_data)
         db.session.commit()
 
-        return render_template("users.html",side_bar=side_bar,items=Users.query.all())
+        return render_template("sidebars_admin.html",side_bar=side_bar,items=Users.query.all())
 
-    return render_template("users.html",side_bar=side_bar,items=Users.query.all())
+    return render_template("sidebars_admin.html",side_bar=side_bar,items=Users.query.all())
 
 side_bar_main = [{"name":"Новости","url":"news"},{"name":"Документы","url":"document"},{"name":"Опрос","url":"survey"},
                  {"name":"Структура","url":"structure"},{"name":"Теги новостей","url":"tag_news"},
@@ -180,6 +197,12 @@ def news():
 def create_news():
 
     return render_template("create_news.html",side_bar_main=side_bar_main)
+
+@app.route("/aaa")
+@login_required
+def aaa():
+
+    return render_template("sidebars_admin.html")
 
 
 if __name__ == "__main__":
