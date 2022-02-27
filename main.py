@@ -127,10 +127,18 @@ def update_user(user_id):
 
     if request.method == "POST":
 
-        pass
+        Users.query.filter_by(id=user_id).update({Users.login:request.form["login"],Users.email: request.form["email"]})
+
+        print(request.form["login"])
+        print(request.form["email"])
+
+        db.session.flush()
+        db.session.commit()
+
+        flash("Успешно сохранено", category='success')
 
 
-    return render_template("edit_user.html",side_bar=side_bar,q=q)
+    return render_template("sidebars_admin.html",side_bar=side_bar,q=q)
 
 
 

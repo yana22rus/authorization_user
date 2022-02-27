@@ -9,6 +9,9 @@
 
 {% block content %}
 
+{% for cat,msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{%endfor%}
 
 <h4>Редактирование пользователя</h4>
 
@@ -17,10 +20,10 @@
 
 
     <p>
-        <input type="text" value="{{q.login}}">
+        <input type="text" value="{{q.login}}" name="login">
 
     </p>
-        <input type="text" value="{{q.email}}">
+        <input type="text" value="{{q.email}}" name="email">
 
      <p>
 
