@@ -47,12 +47,12 @@ class User_auth_log(db.Model):
 def load_user(user_id):
     return Users.query.get(user_id)
 
-side_bar = [{"name":"Пользователи","url":"users"},{"name":"Роли","url":"role"},{"name":"Права доступа","url":"permission"},{"name":"Логи авторизации","url":"logs_authorization"}]
+side_bar = [{"name":"Пользователи","url":"/users"},{"name":"Роли","url":"/role"},{"name":"Права доступа","url":"/permission"},{"name":"Логи авторизации","url":"/logs_authorization"}]
 
-side_bar_main = [{"name":"Новости","url":"news"},{"name":"Документы","url":"document"},{"name":"Опрос","url":"survey"},
-                 {"name":"Структура","url":"structure"},{"name":"Теги новостей","url":"tag_news"},
-                 {"name":"Теги документов","url":"tag_news"},{"name":"Фоторепортажи","url":"photo_report"},
-                 {"name":"Видеорепортажи","url":"video_report"},{"name":"Список опечаток","url":"typo_repor"},
+side_bar_main = [{"name":"Новости","url":"/news"},{"name":"Документы","url":"/document"},{"name":"Опрос","url":"/survey"},
+                 {"name":"Структура","url":"/structure"},{"name":"Теги новостей","url":"/tag_news"},
+                 {"name":"Теги документов","url":"/tag_document"},{"name":"Фоторепортажи","url":"/photo_report"},
+                 {"name":"Видеорепортажи","url":"/video_report"},{"name":"Список опечаток","url":"/typo_repor"},
                  ]
 
 
