@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Flask,render_template,request,redirect,flash,url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin,login_required,login_user,logout_user
+from flask_login import LoginManager, UserMixin,login_required,login_user,logout_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from forms import LoginForm
 
@@ -32,14 +32,26 @@ class Users(db.Model,UserMixin):
 
 login_manager = LoginManager(app)
 
+
+class News(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    login = db.Column(db.String, nullable=True)
+    time = db.Column(db.String, nullable=True)
+    seo_title = db.Column(db.String, nullable=True)
+    seo_description = db.Column(db.String, nullable=True)
+    title = db.Column(db.String, nullable=True)
+    subtitle = db.Column(db.String, nullable=True)
+    content = db.Column(db.String, nullable=True)
+    short_link = db.Column(db.String, nullable=False)
+
+
+
 class User_auth_log(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.String, nullable=True)
     login = db.Column(db.String, nullable=True)
-
-
-
 
 
 
@@ -201,13 +213,44 @@ def main():
 @login_required
 def news():
 
-    return render_template("news.html",side_bar_main=side_bar_main)
 
-@app.route("/create_news")
+
+    return render_template("news.html",side_bar_main=side_bar_main,items=News.query.all())
+
+
+
+
+@app.route("/create_news",methods=["GET","POST"])
 @login_required
 def create_news():
 
+    if request.method == "POST":
+
+
+        create_news = News(login=current_user.login,
+                           time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),seo_title=request.form["seo_title"],
+                           seo_description=request.form["seo_description"],title=request.form["title"],
+                           subtitle=request.form["subtitle"],content=request.form["content"],short_link="123")
+
+        db.session.add(create_news)
+        db.session.flush()
+        db.session.commit()
+
+        flash("Успешно сохранено")
+
+
     return render_template("create_news.html",side_bar_main=side_bar_main)
+
+
+@app.route("/update_news/<int:news_id>",methods=["GET","POST"])
+@login_required
+def update_news(news_id):
+
+    q = News.query.filter_by(id=news_id).first()
+
+    print(q)
+
+    return render_template("edit_news.html",side_bar_main=side_bar_main,q=q)
 
 
 

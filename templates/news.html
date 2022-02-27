@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block sidebar %}
 
-{% for m in side_bar %}
+{% for m in side_bar_main %}
 <p><a href="{{m.url}}">{{m.name}}</a></p>
 {% endfor %}
 {% endblock %}
@@ -10,15 +10,16 @@
 
 <button onclick="window.location.href = '{{ url_for('create_news') }}';">Добавить</button>
 
-<h4>Список пользователей</h4>
-<form method="POST">
+<h4>Список новостей</h4>
+<div align="left"> Заголовок Дата создания Автор</div>
+<hr>
 {% for item in items %}
-<p>{{ item.login }}
-<input type="submit" value="Удалить" name="{{ item.id }}">
-    {% endfor %}
-</p>
-</form>
-
+<table>
+    <tr>
+<td>{{ item.title }}</td><td>{{ item.time }}</td><td>{{ item.login }}</td>
+    </tr>
+    </table>
+{% endfor %}
 
 
 {% endblock %}

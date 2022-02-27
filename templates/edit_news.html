@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+{% for m in side_bar_main %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+{% for cat,msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{%endfor%}
+
+<h4>Редактирование новости</h4>
+
+<form method="POST">
+
+
+
+    <p><label> SEO Title
+        <input type="text" value="{{q.seo_title}}" name="seo_title">
+    </label>
+
+    </p>
+    <p>
+    <label>SEO Description
+        <input type="text" value="{{q.seo_description}}" name="seo_description">
+        </label>
+     </p>
+
+        <p><label> Заголовок
+        <input type="text" value="{{q.title}}" name="title">
+    </label>
+
+    </p>
+
+            <p><label> Подзаголовок
+        <input type="text" value="{{q.subtitle}}" name="title">
+    </label>
+
+    </p>
+
+                <p><label> Содержимое
+        <input type="text" value="{{q.subtitle}}" name="title">
+    </label>
+
+    </p>
+
+
+
+    <input type="submit" value="Сохранить">
+
+
+</form>
+
+
+{% endblock %}
