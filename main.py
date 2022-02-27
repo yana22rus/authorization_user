@@ -47,13 +47,21 @@ class User_auth_log(db.Model):
 def load_user(user_id):
     return Users.query.get(user_id)
 
+side_bar = [{"name":"Пользователи","url":"users"},{"name":"Роли","url":"role"},{"name":"Права доступа","url":"permission"},{"name":"Логи авторизации","url":"logs_authorization"}]
+
+side_bar_main = [{"name":"Новости","url":"news"},{"name":"Документы","url":"document"},{"name":"Опрос","url":"survey"},
+                 {"name":"Структура","url":"structure"},{"name":"Теги новостей","url":"tag_news"},
+                 {"name":"Теги документов","url":"tag_news"},{"name":"Фоторепортажи","url":"photo_report"},
+                 {"name":"Видеорепортажи","url":"video_report"},{"name":"Список опечаток","url":"typo_repor"},
+                 ]
+
 
 @app.route("/")
 @app.route("/index")
 @login_required
 def index():
 
-    return render_template("sidebars.html")
+    return render_template("base.html")
 
 @app.route("/admin_panel")
 @login_required
@@ -129,8 +137,7 @@ def update_user(user_id):
 
         Users.query.filter_by(id=user_id).update({Users.login:request.form["login"],Users.email: request.form["email"]})
 
-        print(request.form["login"])
-        print(request.form["email"])
+
 
         db.session.flush()
         db.session.commit()
@@ -138,11 +145,11 @@ def update_user(user_id):
         flash("Успешно сохранено", category='success')
 
 
-    return render_template("sidebars_admin.html",side_bar=side_bar,q=q)
+    return render_template("edit_user.html",side_bar=side_bar,q=q)
 
 
 
-side_bar = [{"name":"Пользователи","url":"users"},{"name":"Роли","url":"role"},{"name":"Права доступа","url":"permission"},{"name":"Логи авторизации","url":"logs_authorization"}]
+
 
 @app.route("/admin")
 @login_required
@@ -179,15 +186,11 @@ def users():
         db.session.delete(my_data)
         db.session.commit()
 
-        return render_template("sidebars_admin.html",side_bar=side_bar,items=Users.query.all())
+        return render_template("users.html",side_bar=side_bar,items=Users.query.all())
 
-    return render_template("sidebars_admin.html",side_bar=side_bar,items=Users.query.all())
+    return render_template("users.html",side_bar=side_bar,items=Users.query.all())
 
-side_bar_main = [{"name":"Новости","url":"news"},{"name":"Документы","url":"document"},{"name":"Опрос","url":"survey"},
-                 {"name":"Структура","url":"structure"},{"name":"Теги новостей","url":"tag_news"},
-                 {"name":"Теги документов","url":"tag_news"},{"name":"Фоторепортажи","url":"photo_report"},
-                 {"name":"Видеорепортажи","url":"video_report"},{"name":"Список опечаток","url":"typo_repor"},
-                 ]
+
 
 @app.route("/main")
 @login_required
@@ -206,11 +209,19 @@ def create_news():
 
     return render_template("create_news.html",side_bar_main=side_bar_main)
 
-@app.route("/aaa")
-@login_required
-def aaa():
 
-    return render_template("sidebars_admin.html")
+
+@app.route("/role")
+@login_required
+def role():
+
+    return "TODO"
+
+@app.route("/permission")
+@login_required
+def permission():
+
+    return "TODO"
 
 
 if __name__ == "__main__":

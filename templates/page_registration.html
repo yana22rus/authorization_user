@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+{% block sidebar %}
+
+{% for m in side_bar %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
 {% block content %}
 {% for cat,msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
