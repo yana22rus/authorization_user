@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block sidebar %}
+
+{% for m in side_bar_main %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" name="create_quiz">
+
+
+    <input type="submit" value="Сохранить">
+</form>
+
+
+
+
+{% endblock %}

@@ -62,6 +62,7 @@ def load_user(user_id):
 side_bar = [{"name":"Пользователи","url":"/users"},{"name":"Роли","url":"/role"},{"name":"Права доступа","url":"/permission"},{"name":"Логи авторизации","url":"/logs_authorization"}]
 
 side_bar_main = [{"name":"Новости","url":"/news"},{"name":"Документы","url":"/document"},{"name":"Опрос","url":"/survey"},
+                 {"name":"Викторина","url":"/quiz"},
                  {"name":"Структура","url":"/structure"},{"name":"Теги новостей","url":"/tag_news"},
                  {"name":"Теги документов","url":"/tag_document"},{"name":"Фоторепортажи","url":"/photo_report"},
                  {"name":"Видеорепортажи","url":"/video_report"},{"name":"Список опечаток","url":"/typo_repor"},
@@ -213,6 +214,7 @@ def main():
 @login_required
 def news():
 
+    #res = db.session.query(Users,News).join(Users,Users.login == News.login).all()
 
 
     return render_template("news.html",side_bar_main=side_bar_main,items=News.query.all())
@@ -248,10 +250,23 @@ def update_news(news_id):
 
     q = News.query.filter_by(id=news_id).first()
 
-    print(q)
+
 
     return render_template("edit_news.html",side_bar_main=side_bar_main,q=q)
 
+
+@app.route("/quiz")
+@login_required
+def quiz():
+
+    return render_template("quiz.html",side_bar_main=side_bar_main)
+
+
+@app.route("/create_quiz",methods=["GET","POST"])
+@login_required
+def create_quiz():
+
+    return render_template("create_quiz.html",side_bar_main=side_bar_main)
 
 
 @app.route("/role")

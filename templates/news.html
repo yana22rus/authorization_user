@@ -14,12 +14,12 @@
 <div align="left"> Заголовок Дата создания Автор</div>
 <hr>
 {% for item in items %}
+
 <table>
     <tr>
-<td>{{ item.title }}</td><td>{{ item.time }}</td><td>{{ item.login }}</td>
+        <td><a href="{{ url_for('update_user',user_id=item.id) }}">{{ item.title }}</a></td><td>{{ item.time }}</td><td>{{ item.login }}</td>
     </tr>
     </table>
 {% endfor %}
-
 
 {% endblock %}
