@@ -214,10 +214,10 @@ def main():
 @login_required
 def news():
 
-    #res = db.session.query(Users,News).join(Users,Users.login == News.login).all()
+    res = db.session.query(Users,News).join(Users,Users.login == News.login).all()
 
 
-    return render_template("news.html",side_bar_main=side_bar_main,items=News.query.all())
+    return render_template("news.html",side_bar_main=side_bar_main,res=res)
 
 
 

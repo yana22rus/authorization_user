@@ -13,11 +13,11 @@
 <h4>Список новостей</h4>
 <div align="left"> Заголовок Дата создания Автор</div>
 <hr>
-{% for item in items %}
 
+{% for x in res %}
 <table>
     <tr>
-        <td><a href="{{ url_for('update_user',user_id=item.id) }}">{{ item.title }}</a></td><td>{{ item.time }}</td><td>{{ item.login }}</td>
+        <td><a href="{{ url_for('update_news',news_id=x[-1].id) }}">{{x[-1].title}}</a></td><td>{{x[-1].time}} </td><td><a href="{{ url_for('update_user',user_id=x[0].id) }}">{{x[0].login}}</a></td>
     </tr>
     </table>
 {% endfor %}
