@@ -174,7 +174,9 @@ def admin():
 @login_required
 def logs_authorization():
 
-    return render_template("logs_authorization.html", side_bar=side_bar, items=User_auth_log.query.all())
+    join_table = db.session.query(User_auth_log,Users).join(Users,Users.login == User_auth_log.login).all()
+
+    return render_template("logs_authorization.html", side_bar=side_bar,join_table=join_table)
 
 
 @app.route("/logout",methods=["GET","POST"])

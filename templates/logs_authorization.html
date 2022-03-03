@@ -8,7 +8,7 @@
 
 {% block content %}
 <h4>Логин Дата авторизации</h4>
-{% for item in items %}
-<p><b>{{ item.login }}</b> <i>{{ item.time }}</i></p>
+{% for x in join_table %}
+    <p><b><a href="{{ url_for('update_user',user_id=x[-1].id )}}">{{ x[-1].login }}</a></b><i> {{ x[0].time }}</i></p>
 {% endfor %}
 {% endblock %}
