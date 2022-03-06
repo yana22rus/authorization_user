@@ -7,11 +7,14 @@
 {% endblock %}
 
 {% block content %}
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+<form method="POST" id="test">
+    <div id="div">
+<input type="button" value="Добавить вопрос" onclick="add()">
+<input type="button" value="Удалить вопрос" onclick="del()">
+        <input type="submit">
 
-<form method="POST" name="create_quiz">
-
-
-    <input type="submit" value="Сохранить">
+        </div>
 </form>
 
 

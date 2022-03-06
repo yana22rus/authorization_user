@@ -268,6 +268,19 @@ def quiz():
 @login_required
 def create_quiz():
 
+    # TODO
+
+    if request.method == "POST":
+
+        lst = []
+
+        for x in request.form.listvalues():
+
+            lst.append("".join(x))
+
+        print(lst)
+
+
     return render_template("create_quiz.html",side_bar_main=side_bar_main)
 
 
