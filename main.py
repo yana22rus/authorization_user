@@ -54,6 +54,16 @@ class User_auth_log(db.Model):
     login = db.Column(db.String, nullable=True)
 
 
+class Survey(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    title_survey = db.Column(db.String, nullable=True)
+
+    survey = db.Column(db.String, nullable=True)
+
+    login = db.Column(db.String, nullable=True)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -257,6 +267,102 @@ def update_news(news_id):
     return render_template("edit_news.html",side_bar_main=side_bar_main,q=q)
 
 
+@app.route("/survey",methods=["GET","POST"])
+@login_required
+def survey():
+
+    res = db.session.query(Users, Survey).join(Users, Users.login == Survey.login).all()
+
+    if request.method == "POST":
+
+
+        d = request.form.keys()
+        id,*b= d
+
+        my_data = Survey.query.get(id)
+        db.session.delete(my_data)
+        db.session.commit()
+
+        return redirect(url_for("survey"))
+
+    return render_template("survey.html",side_bar_main=side_bar_main,res=res)
+
+
+@app.route("/create_survey",methods=["GET","POST"])
+@login_required
+def create_survey():
+
+    if request.method == "POST":
+
+        lst = []
+
+        for x in request.form.listvalues():
+
+            if x == [request.form["title_survey"]]:
+
+                continue
+
+            lst.append("".join(x))
+
+        lst = ":".join(lst)
+
+        create_survey = Survey(title_survey=request.form["title_survey"],survey=lst,login=current_user.login)
+
+        db.session.add(create_survey)
+        db.session.flush()
+        db.session.commit()
+
+        flash("Успешно сохранено")
+
+        return redirect(url_for("survey"))
+
+
+    return render_template("create_survey.html",side_bar_main=side_bar_main)
+
+
+
+@app.route("/main_survey/<int:survey_id>",methods=["GET","POST"])
+def main_survey(survey_id):
+
+    q = Survey.query.filter_by(id=survey_id).first()
+
+    lst = q.survey.split(":")
+
+    if request.method == "POST":
+
+        vote = request.form["field"]
+
+        with open(f"results_survey{survey_id}.txt","a") as f:
+
+            f.writelines(vote+"\n")
+
+        return redirect(url_for('results_survey',survey_id=survey_id))
+
+    return render_template("main_survey.html",lst=lst,q=q)
+
+@app.route("/results_survey/<int:survey_id>")
+def results_survey(survey_id):
+
+    votes = {}
+
+    q = Survey.query.filter_by(id=survey_id).first()
+
+    lst = q.survey.split(":")
+
+    for x in lst:
+
+        votes[x] = 0
+
+    with open(f"results_survey{survey_id}.txt") as f:
+
+        for line in f:
+
+            vote = line.strip("\n")
+
+            votes[vote] += 1
+
+    return render_template("results.html",votes=votes,q=q)
+
 @app.route("/quiz")
 @login_required
 def quiz():
@@ -277,8 +383,6 @@ def create_quiz():
         for x in request.form.listvalues():
 
             lst.append("".join(x))
-
-        print(lst)
 
 
     return render_template("create_quiz.html",side_bar_main=side_bar_main)
