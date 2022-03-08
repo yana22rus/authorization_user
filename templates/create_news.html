@@ -7,11 +7,13 @@
 {% endblock %}
 
 {% block content %}
-
+<script src="{{ url_for('static', filename='js/create_news.js') }}"></script>
 <form method="POST" name="create_news">
-
-<p>SEO Title <input type="text" name="seo_title"></p>
-<p>SEO Description<input type="text" name="seo_description"></p>
+    <label for="check_box"><input type="checkbox" onclick="check()"  id="check_box">Включить SEO теги</label>
+<div id="div">
+<p><input type="text" name="seo_title" id="seo_title" hidden placeholder="SEO Title"><br></p>
+<p><input type="text" name="seo_description" id="seo_description" hidden placeholder="SEO Description"></p>
+</div>
 <p>Заголовок <input type="text" name="title"></p>
 <p>Подзаголовок <input type="text" name="subtitle"></p>
 <p>Содержимое <textarea name="content"></textarea></p>
