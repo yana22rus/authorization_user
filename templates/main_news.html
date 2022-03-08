@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {%- if news.seo_description  !=""  -%}
+    <meta name="description" content="{{news.seo_description}}"/>
+    {% else -%}
+    <meta name="description" content=""/>
+    {% endif %}
+
+    {%- if news.seo_title  !=""  -%}
+    <title>{{news.seo_title}}</title>
+    {% else -%}
+    <title>Новости</title>
+    {% endif %}
+
+
+</head>
+<body>
+<h1>{{news.title}}</h1>
+</body>
+</html>

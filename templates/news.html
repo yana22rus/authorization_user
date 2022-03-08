@@ -17,7 +17,17 @@
 {% for x in res %}
 <table>
     <tr>
-        <td><a href="{{ url_for('update_news',news_id=x[-1].id) }}">{{x[-1].title}}</a></td><td>{{x[-1].time}} </td><td><a href="{{ url_for('update_user',user_id=x[0].id) }}">{{x[0].login}}</a></td>
+        <td><a href="{{ url_for('main_news',news_id=x[-1].id) }}">{{x[-1].title}}</a></td>
+        <td>{{x[-1].time}} </td>
+        <td><a href="{{ url_for('update_user',user_id=x[0].id) }}">{{x[0].login}}</a></td>
+
+        <td><form action="{{ url_for('update_news',news_id=x[-1].id) }}">
+        <button>Редактировать</button>
+        </form></td>
+
+        <form method="POST">
+        <td><input type="submit" value="Удалить" name="{{ x[1].id }}"></td>
+        </form>
     </tr>
     </table>
 {% endfor %}

@@ -222,11 +222,23 @@ def users():
 def main():
     return render_template("main.html",side_bar_main=side_bar_main)
 
-@app.route("/news")
+@app.route("/news",methods=["GET","POST"])
 @login_required
 def news():
 
     res = db.session.query(Users,News).join(Users,Users.login == News.login).all()
+
+    if request.method == "POST":
+
+
+        d = request.form.keys()
+        id,*b= d
+
+        my_data = News.query.get(id)
+        db.session.delete(my_data)
+        db.session.commit()
+
+        return redirect(url_for("news"))
 
 
     return render_template("news.html",side_bar_main=side_bar_main,res=res)
@@ -262,10 +274,28 @@ def update_news(news_id):
 
     q = News.query.filter_by(id=news_id).first()
 
+    if request.method == "POST":
 
+        News.query.filter_by(id=news_id).update({News.seo_title:request.form["seo_title"],
+                                                 News.seo_description: request.form["seo_description"],
+                                                 News.title:request.form["title"],
+                                                 News.subtitle:request.form["subtitle"],
+                                                 News.content:request.form["content"],
+                                                 })
+
+        db.session.flush()
+        db.session.commit()
+
+        flash("Успешно сохранено", category='success')
 
     return render_template("edit_news.html",side_bar_main=side_bar_main,q=q)
 
+@app.route("/main_news/<int:news_id>")
+def main_news(news_id):
+
+    news = News.query.filter_by(id=news_id).first()
+
+    return render_template("main_news.html",news=news)
 
 @app.route("/survey",methods=["GET","POST"])
 @login_required
