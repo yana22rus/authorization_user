@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask,render_template,request,redirect,flash,url_for
+from flask import Flask,render_template,request,redirect,flash,url_for,make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin,login_required,login_user,logout_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -81,10 +81,9 @@ side_bar_main = [{"name":"Новости","url":"/news"},{"name":"Докумен
 
 @app.route("/")
 @app.route("/index")
-@login_required
 def index():
 
-    return render_template("base.html")
+    return render_template("index.html")
 
 @app.route("/admin_panel")
 @login_required
