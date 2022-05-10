@@ -7,7 +7,7 @@ from forms import LoginForm
 
 app = Flask(__name__)
 app.secret_key = "key"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/qwe/users.sql'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/qwe/main.sqlite'
 db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
