@@ -14,9 +14,16 @@
     <title>Новости</title>
     {% endif %}
 
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/news.css') }}">
 </head>
 <body>
-<h1>{{news.title}}</h1>
+
+
+<div class="image">
+<img src="/static/img/uploads/{{news.img}}" width="33%" height="33%">
+<h2>{{news.title}}</h2>
+</div>
+<h3>{{news.subtitle}}</h3>
+<h3>{{news.content}}</h3>
 </body>
 </html>

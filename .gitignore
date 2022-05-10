@@ -1,3 +1,4 @@
 .idea
 venv/
+*.jpg
 __pycache__/
