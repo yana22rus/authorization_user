@@ -151,13 +151,8 @@ def registration():
 
         #q = Survey.query.filter_by(login=form["login"]).first()
 
-        html_value = str(form["login"])
 
-        value = "".join(re.findall(r'value=\"(.\w+)\"',html_value))
-
-        print(value)
-
-
+        print(form.login.data)
 
         #return render_template("edit_user.html", side_bar=side_bar, q=q)
 
