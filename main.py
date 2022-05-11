@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import uuid
+import re
 from flask import Flask,render_template,request,redirect,flash,url_for,make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin,login_required,login_user,logout_user,current_user
@@ -148,7 +149,17 @@ def registration():
         db.session.flush()
         db.session.commit()
 
-        flash("Вы успешно зарегистрированы")
+        #q = Survey.query.filter_by(login=form["login"]).first()
+
+        html_value = str(form["login"])
+
+        value = "".join(re.findall(r'value=\"(.\w+)\"',html_value))
+
+        print(value)
+
+
+
+        #return render_template("edit_user.html", side_bar=side_bar, q=q)
 
 
         return redirect(url_for("registration"))
@@ -262,9 +273,18 @@ def create_news():
 
         file_extensions = file.filename
 
+        news = News.query.filter_by(title=request.form["title"]).first()
+
         if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
 
             flash("Не поддерживаемый тип файла", category='error')
+
+            return render_template("create_news.html", side_bar_main=side_bar_main)
+
+
+        elif news != None:
+
+            flash("Дублирующий заголовок новости", category='error')
 
             return render_template("create_news.html", side_bar_main=side_bar_main)
 
@@ -302,11 +322,26 @@ def update_news(news_id):
 
     if request.method == "POST":
 
+        file = request.files["file"]
+
+        file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
+
+        file_extensions = file.filename
+
+        if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
+
+            flash("Не поддерживаемый тип файла", category='error')
+
+            return render_template("edit_news.html", side_bar_main=side_bar_main,q=q)
+
+        file.save(os.path.join("static", UPLOAD_FOLDER, file.filename))
+
         News.query.filter_by(id=news_id).update({News.seo_title:request.form["seo_title"],
                                                  News.seo_description: request.form["seo_description"],
                                                  News.title:request.form["title"],
                                                  News.subtitle:request.form["subtitle"],
                                                  News.content:request.form["content"],
+                                                 News.img:file.filename
                                                  })
 
         db.session.flush()
