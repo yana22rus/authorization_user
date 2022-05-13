@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 import uuid
-import re
+from getpass import getuser
 from flask import Flask,render_template,request,redirect,flash,url_for,make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin,login_required,login_user,logout_user,current_user
@@ -12,7 +12,7 @@ UPLOAD_FOLDER = os.path.join("img","uploads")
 
 app = Flask(__name__)
 app.secret_key = "key"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/qwe/main.sqlite'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:////home/{getuser()}/main.sqlite'
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1042 * 1042
 db = SQLAlchemy(app)
@@ -319,17 +319,35 @@ def update_news(news_id):
 
         file = request.files["file"]
 
-        file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
-
         file_extensions = file.filename
 
-        if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
+        if file_extensions == "":
 
-            flash("Не поддерживаемый тип файла", category='error')
+            News.query.filter_by(id=news_id).update({News.seo_title: request.form["seo_title"],
+                                                     News.seo_description: request.form["seo_description"],
+                                                     News.title: request.form["title"],
+                                                     News.subtitle: request.form["subtitle"],
+                                                     News.content: request.form["content"],
+                                                     })
 
-            return render_template("edit_news.html", side_bar_main=side_bar_main,q=q)
+            db.session.flush()
+            db.session.commit()
 
-        file.save(os.path.join("static", UPLOAD_FOLDER, file.filename))
+            flash("Успешно сохранено", category='success')
+
+            return render_template("edit_news.html", side_bar_main=side_bar_main, q=q)
+
+        else:
+
+            file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
+
+            if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
+
+                flash("Не поддерживаемый тип файла", category='error')
+
+                return render_template("edit_news.html", side_bar_main=side_bar_main,q=q)
+
+            file.save(os.path.join("static", UPLOAD_FOLDER, file.filename))
 
         News.query.filter_by(id=news_id).update({News.seo_title:request.form["seo_title"],
                                                  News.seo_description: request.form["seo_description"],
