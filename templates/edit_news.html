@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-
 {% block sidebar %}
+
 {% for m in side_bar_main %}
 <p><a href="{{m.url}}">{{m.name}}</a></p>
 {% endfor %}
@@ -10,62 +10,38 @@
 {% for cat,msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
 {%endfor%}
-        <button onclick="window.location.href = '{{ url_for('create_news') }}';">Добавить</button>
+<script src="{{ url_for('static', filename='js/create_news.js') }}"></script>
 
-        <form method="POST">
-            <input type="submit" name="btn" value="Удалить">
-            <input type="text" value="{{q.id}}" name="delete" hidden>
-        </form>
-
-
-<h4>Редактирование новости</h4>
-
-<form method="POST" enctype=multipart/form-data>
-
-    <p>Адрес новости:
-        <td><a href="{{ url_for('main_news',news_id=q.id) }}">Перейти</a></td>
-
+<form method="POST" class="form-contact" enctype=multipart/form-data name="create_news">
+        <label for="check_box"><input type="checkbox" onclick="check()"  id="check_box">Включить SEO теги</label>
+<div id="div">
+<p><input type="text" name="seo_title" id="seo_title" hidden placeholder="SEO Title"><br></p>
+<p><input type="text" name="seo_description" id="seo_description" hidden placeholder="SEO Description"></p>
+</div>
+{{form.hidden_tag()}}
+    {% for x in form if x.name not in ['csrf_token','submit'] -%}
+    <p>{{ x.label() }}
+    {% if x.errors %}
+        {{ x(class="invalid") }}
+        <span class="invalid-feedback">
+        {% for e in x.errors %}
+        {{e}}
+        {% endfor %}
+        </span>
+        {% else%}
+        {{x()}}
+        {% endif%}
+        {% endfor %}
     </p>
 
-    <p><label> SEO Title
-        <input type="text" value="{{q.seo_title}}" name="seo_title">
-    </label>
+<label> Изображение
+<img src="/static/img/uploads/{{q.img}}" width="33%" height="33%">
+<input type="file" name="file">
 
-    </p>
-    <p>
-    <label>SEO Description
-        <input type="text" value="{{q.seo_description}}" name="seo_description">
-        </label>
-     </p>
+</label>
 
-        <p><label> Заголовок
-        <input type="text" value="{{q.title}}" name="title" required>
-    </label>
-
-    </p>
-
-            <p><label> Подзаголовок
-        <input type="text" value="{{q.subtitle}}" name="subtitle">
-    </label>
-
-    </p>
-
-<p>
-    <label> Содержимое
-    <input type="text" value="{{q.content}}" name="content">
-    </label>
-</p>
-<p>
-    <img src="/static/img/uploads/{{q.img}}" width="33%" height="33%">
-    <label> Изображение
-    <input type="file" name="file">
-    </label>
-</p>
-
-    <input type="submit" name="btn" value="Сохранить">
-
+    <p>{{form.submit()}}</p>
 
 </form>
-
 
 {% endblock %}
