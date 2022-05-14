@@ -6,7 +6,7 @@ from flask import Flask,render_template,request,redirect,flash,url_for,make_resp
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin,login_required,login_user,logout_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
-from forms import LoginForm
+from forms import LoginForm,CreateNewsForm
 
 UPLOAD_FOLDER = os.path.join("img","uploads")
 
@@ -256,48 +256,54 @@ ALLOWED_EXTENSIONS = {"png","jpg","jpeg"}
 @login_required
 def create_news():
 
-    if request.method == "POST":
+    form = CreateNewsForm()
 
-        file = request.files["file"]
+    if form.validate_on_submit():
 
-        file_extensions = file.filename
+        print(123)
 
-        news = News.query.filter_by(title=request.form["title"]).first()
-
-        if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
-
-            flash("Не поддерживаемый тип файла", category='error')
-
-            return render_template("create_news.html", side_bar_main=side_bar_main)
-
-
-        elif news != None:
-
-            flash("Дублирующий заголовок новости", category='error')
-
-            return render_template("create_news.html", side_bar_main=side_bar_main)
-
-        else:
-
-            file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
-
-            file.save(os.path.join("static",UPLOAD_FOLDER,file.filename))
-
-            create_news = News(login=current_user.login,
-                               time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),seo_title=request.form["seo_title"],
-                               seo_description=request.form["seo_description"],title=request.form["title"],
-                               subtitle=request.form["subtitle"],content=request.form["content"],img=file.filename)
-
-            db.session.add(create_news)
-            db.session.flush()
-            db.session.commit()
-
-            flash("Успешно сохранено",category='success')
-
-            q = News.query.filter_by(title=request.form["title"]).first()
-
-
-            return redirect(f"/update_news/{q.id}")
+    # if request.method == "POST":
+    #
+    #     file = request.files["file"]
+    #
+    #     file_extensions = file.filename
+    #
+    #     news = News.query.filter_by(title=request.form["title"]).first()
+    #
+    #     if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
+    #
+    #         flash("Не поддерживаемый тип файла", category='error')
+    #
+    #         return render_template("create_news.html", side_bar_main=side_bar_main)
+    #
+    #
+    #     elif news != None:
+    #
+    #         flash("Дублирующий заголовок новости", category='error')
+    #
+    #         return render_template("create_news.html", side_bar_main=side_bar_main)
+    #
+    #     else:
+    #
+    #         file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
+    #
+    #         file.save(os.path.join("static",UPLOAD_FOLDER,file.filename))
+    #
+    #         create_news = News(login=current_user.login,
+    #                            time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),seo_title=request.form["seo_title"],
+    #                            seo_description=request.form["seo_description"],title=request.form["title"],
+    #                            subtitle=request.form["subtitle"],content=request.form["content"],img=file.filename)
+    #
+    #         db.session.add(create_news)
+    #         db.session.flush()
+    #         db.session.commit()
+    #
+    #         flash("Успешно сохранено",category='success')
+    #
+    #         q = News.query.filter_by(title=request.form["title"]).first()
+    #
+    #
+    #         return redirect(f"/update_news/{q.id}")
 
 
     return render_template("create_news.html",side_bar_main=side_bar_main)
@@ -322,9 +328,6 @@ def update_news(news_id):
             return redirect("/news")
 
         if request.form["btn"] == "Сохранить":
-
-
-            print(222)
 
             file = request.files["file"]
 

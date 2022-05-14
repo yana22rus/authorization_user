@@ -10,11 +10,13 @@
 {% for cat,msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
 {%endfor%}
+        <button onclick="window.location.href = '{{ url_for('create_news') }}';">Добавить</button>
 
         <form method="POST">
             <input type="submit" name="btn" value="Удалить">
             <input type="text" value="{{q.id}}" name="delete" hidden>
         </form>
+
 
 <h4>Редактирование новости</h4>
 

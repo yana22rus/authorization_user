@@ -8,3 +8,13 @@ class LoginForm(FlaskForm):
     email = StringField("Email",validators=[Email("Некорректный email")])
     password = PasswordField("Пароль",validators=[DataRequired(),Length(min=4,max=100,message="Пароль должен быть от 4 до 100 символов")])
     submit = SubmitField("Сохранить")
+
+
+class CreateNewsForm(FlaskForm):
+
+    title = StringField("Заголовок",validators=[Length(min=4,max=255,message="Заголовок должен быть от 4 до 255 символов")],name="title")
+
+    subtitle = StringField("Подзаголовок",validators=[Length(max=255,message="Подзаголовок должен быть до 255 символов")],name="subtitle")
+
+    content = StringField("Содержимое",validators=[Length(max=255,message="Содержимое должен быть до 255 символов")],name="content")
+
