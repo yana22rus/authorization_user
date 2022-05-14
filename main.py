@@ -260,53 +260,47 @@ def create_news():
 
     if form.validate_on_submit():
 
-        print(123)
+        file = request.files["file"]
 
-    # if request.method == "POST":
-    #
-    #     file = request.files["file"]
-    #
-    #     file_extensions = file.filename
-    #
-    #     news = News.query.filter_by(title=request.form["title"]).first()
-    #
-    #     if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
-    #
-    #         flash("Не поддерживаемый тип файла", category='error')
-    #
-    #         return render_template("create_news.html", side_bar_main=side_bar_main)
-    #
-    #
-    #     elif news != None:
-    #
-    #         flash("Дублирующий заголовок новости", category='error')
-    #
-    #         return render_template("create_news.html", side_bar_main=side_bar_main)
-    #
-    #     else:
-    #
-    #         file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
-    #
-    #         file.save(os.path.join("static",UPLOAD_FOLDER,file.filename))
-    #
-    #         create_news = News(login=current_user.login,
-    #                            time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),seo_title=request.form["seo_title"],
-    #                            seo_description=request.form["seo_description"],title=request.form["title"],
-    #                            subtitle=request.form["subtitle"],content=request.form["content"],img=file.filename)
-    #
-    #         db.session.add(create_news)
-    #         db.session.flush()
-    #         db.session.commit()
-    #
-    #         flash("Успешно сохранено",category='success')
-    #
-    #         q = News.query.filter_by(title=request.form["title"]).first()
-    #
-    #
-    #         return redirect(f"/update_news/{q.id}")
+        file_extensions = file.filename
+
+        news = News.query.filter_by(title=request.form["title"]).first()
+
+        if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
+
+            flash("Не поддерживаемый тип файла", category='error')
+
+            return render_template("create_news.html", side_bar_main=side_bar_main,form=form)
 
 
-    return render_template("create_news.html",side_bar_main=side_bar_main)
+        elif news != None:
+
+            flash("Дублирующий заголовок новости", category='error')
+
+            return render_template("create_news.html", side_bar_main=side_bar_main,form=form)
+
+        else:
+
+            file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
+
+            file.save(os.path.join("static",UPLOAD_FOLDER,file.filename))
+
+            create_news = News(login=current_user.login,
+                               time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),seo_title=request.form["seo_title"],
+                               seo_description=request.form["seo_description"],title=request.form["title"],
+                               subtitle=request.form["subtitle"],content=request.form["content_page"],img=file.filename)
+
+            db.session.add(create_news)
+            db.session.flush()
+            db.session.commit()
+
+            flash("Успешно сохранено",category='success')
+
+            q = News.query.filter_by(title=request.form["title"]).first()
+
+            return redirect(f"/update_news/{q.id}")
+
+    return render_template("create_news.html",side_bar_main=side_bar_main,form=form)
 
 
 @app.route("/update_news/<int:news_id>",methods=["GET","POST"])
@@ -318,8 +312,6 @@ def update_news(news_id):
     if request.method == 'POST':
 
         if request.form["btn"] == "Удалить":
-
-            print(request.form["delete"])
 
             my_data = News.query.get(request.form["delete"])
             db.session.delete(my_data)
