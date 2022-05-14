@@ -1,5 +1,7 @@
 .idea
 venv/
 *.jpg
+*.jpeg
+*.png
 *.webp
 __pycache__/
