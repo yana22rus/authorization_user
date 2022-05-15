@@ -22,5 +22,5 @@ class CreateNewsForm(FlaskForm):
 
     content_page = StringField("Содержимое",validators=[Length(max=255,message="Содержимое должен быть до 255 символов")],name="content_page")
 
-    submit = SubmitField("Сохранить")
+    submit = SubmitField("Сохранить",name="submit")
 

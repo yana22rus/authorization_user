@@ -258,7 +258,7 @@ def create_news():
 
     form = CreateNewsForm()
 
-    if form.validate_on_submit():
+    if request.method == "POST" and form.validate_on_submit():
 
         file = request.files["file"]
 
@@ -311,51 +311,62 @@ def update_news(news_id):
 
     form = CreateNewsForm(seo_title=q.seo_title,seo_description=q.seo_description,title=q.title,subtitle=q.subtitle,content_page=q.content_page)
 
-    if form.validate_on_submit():
+    if request.method == "POST":
 
-        file = request.files["file"]
+        if request.form["submit"] == "Удалить":
 
-        file_extensions = file.filename
+            my_data = News.query.get(request.form["delete"])
+            db.session.delete(my_data)
+            db.session.commit()
 
-        if file_extensions == "":
+            return redirect("/news")
 
-            News.query.filter_by(id=news_id).update({News.seo_title: request.form["seo_title"],
+
+        if request.form["submit"] == "Сохранить":
+
+            file = request.files["file"]
+
+            file_extensions = file.filename
+
+            if file_extensions == "":
+
+                News.query.filter_by(id=news_id).update({News.seo_title: request.form["seo_title"],
+                                                         News.seo_description: request.form["seo_description"],
+                                                         News.title: request.form["title"],
+                                                         News.subtitle: request.form["subtitle"],
+                                                         News.content_page: request.form["content_page"],
+                                                         })
+                db.session.flush()
+                db.session.commit()
+
+                flash("Успешно сохранено", category='success')
+
+                return render_template("edit_news.html", side_bar_main=side_bar_main, q=q,form=form)
+
+            else:
+
+                file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
+
+                if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
+
+                    flash("Не поддерживаемый тип файла", category='error')
+
+                    return render_template("edit_news.html", side_bar_main=side_bar_main,q=q,form=form)
+
+                file.save(os.path.join("static", UPLOAD_FOLDER, file.filename))
+
+            News.query.filter_by(id=news_id).update({News.seo_title:request.form["seo_title"],
                                                      News.seo_description: request.form["seo_description"],
-                                                     News.title: request.form["title"],
-                                                     News.subtitle: request.form["subtitle"],
-                                                     News.content_page: request.form["content_page"],
+                                                     News.title:request.form["title"],
+                                                     News.subtitle:request.form["subtitle"],
+                                                     News.content_page:request.form["content_page"],
+                                                     News.img:file.filename
                                                      })
+
             db.session.flush()
             db.session.commit()
 
             flash("Успешно сохранено", category='success')
-
-            return render_template("edit_news.html", side_bar_main=side_bar_main, q=q,form=form)
-
-        else:
-
-            file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
-
-            if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
-
-                flash("Не поддерживаемый тип файла", category='error')
-
-                return render_template("edit_news.html", side_bar_main=side_bar_main,q=q,form=form)
-
-            file.save(os.path.join("static", UPLOAD_FOLDER, file.filename))
-
-        News.query.filter_by(id=news_id).update({News.seo_title:request.form["seo_title"],
-                                                 News.seo_description: request.form["seo_description"],
-                                                 News.title:request.form["title"],
-                                                 News.subtitle:request.form["subtitle"],
-                                                 News.content_page:request.form["content_page"],
-                                                 News.img:file.filename
-                                                 })
-
-        db.session.flush()
-        db.session.commit()
-
-        flash("Успешно сохранено", category='success')
 
     return render_template("edit_news.html",side_bar_main=side_bar_main,q=q,form=form)
 
