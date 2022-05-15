@@ -12,6 +12,10 @@ class LoginForm(FlaskForm):
 
 class CreateNewsForm(FlaskForm):
 
+    seo_title = StringField("SEO Title",validators=[Length(max=255,message="SEO Title должен быть от 4 до 255 символов")],name="seo_title",id="seo_title")
+
+    seo_description = StringField("SEO Description",validators=[Length(max=255,message="SEO Description должен быть от 4 до 255 символов")],name="seo_description",id="seo_description")
+
     title = StringField("Заголовок",validators=[Length(min=4,max=255,message="Заголовок должен быть от 4 до 255 символов")],name="title")
 
     subtitle = StringField("Подзаголовок",validators=[Length(max=255,message="Подзаголовок должен быть до 255 символов")],name="subtitle")

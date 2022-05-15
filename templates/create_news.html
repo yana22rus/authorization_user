@@ -12,11 +12,6 @@
 {%endfor%}
 <script src="{{ url_for('static', filename='js/create_news.js') }}"></script>
 <form method="POST" class="form-contact" enctype=multipart/form-data name="create_news">
-        <label for="check_box"><input type="checkbox" onclick="check()"  id="check_box">Включить SEO теги</label>
-<div id="div">
-<p><input type="text" name="seo_title" id="seo_title" hidden placeholder="SEO Title"><br></p>
-<p><input type="text" name="seo_description" id="seo_description" hidden placeholder="SEO Description"></p>
-</div>
 {{form.hidden_tag()}}
     {% for x in form if x.name not in ['csrf_token','submit'] -%}
     <p>{{ x.label() }}

@@ -49,7 +49,7 @@ class News(db.Model):
     seo_description = db.Column(db.String, nullable=True)
     title = db.Column(db.String, nullable=True)
     subtitle = db.Column(db.String, nullable=True)
-    content = db.Column(db.String, nullable=True)
+    content_page = db.Column(db.String, nullable=True)
     short_link = db.Column(db.String, nullable=False)
     img = db.Column(db.String, nullable=False)
 
@@ -288,7 +288,7 @@ def create_news():
             create_news = News(login=current_user.login,
                                time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),seo_title=request.form["seo_title"],
                                seo_description=request.form["seo_description"],title=request.form["title"],
-                               subtitle=request.form["subtitle"],content=request.form["content_page"],img=file.filename)
+                               subtitle=request.form["subtitle"],content_page=request.form["content_page"],img=file.filename)
 
             db.session.add(create_news)
             db.session.flush()
@@ -309,7 +309,7 @@ def update_news(news_id):
 
     q = News.query.filter_by(id=news_id).first()
 
-    form = CreateNewsForm(title=q.title)
+    form = CreateNewsForm(seo_title=q.seo_title,seo_description=q.seo_description,title=q.title,subtitle=q.subtitle,content_page=q.content_page)
 
     if form.validate_on_submit():
 
@@ -323,9 +323,9 @@ def update_news(news_id):
                                                      News.seo_description: request.form["seo_description"],
                                                      News.title: request.form["title"],
                                                      News.subtitle: request.form["subtitle"],
-                                                     News.content: request.form["content_page"],
+                                                     News.content_page: request.form["content_page"],
                                                      })
-
+            db.session.flush()
             db.session.commit()
 
             flash("Успешно сохранено", category='success')
@@ -348,7 +348,7 @@ def update_news(news_id):
                                                  News.seo_description: request.form["seo_description"],
                                                  News.title:request.form["title"],
                                                  News.subtitle:request.form["subtitle"],
-                                                 News.content:request.form["content_page"],
+                                                 News.content_page:request.form["content_page"],
                                                  News.img:file.filename
                                                  })
 
