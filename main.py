@@ -311,16 +311,7 @@ def update_news(news_id):
 
     form = CreateNewsForm(seo_title=q.seo_title,seo_description=q.seo_description,title=q.title,subtitle=q.subtitle,content_page=q.content_page)
 
-    if request.method == "POST":
-
-        if request.form["submit"] == "Удалить":
-
-            my_data = News.query.get(request.form["delete"])
-            db.session.delete(my_data)
-            db.session.commit()
-
-            return redirect("/news")
-
+    if request.method == "POST" and form.validate_on_submit():
 
         if request.form["submit"] == "Сохранить":
 
@@ -367,6 +358,18 @@ def update_news(news_id):
             db.session.commit()
 
             flash("Успешно сохранено", category='success')
+
+    if request.method == "POST":
+
+        if request.form["submit"] == "Удалить":
+
+            my_data = News.query.get(request.form["delete"])
+
+            db.session.delete(my_data)
+
+            db.session.commit()
+
+            return redirect("/news")
 
     return render_template("edit_news.html",side_bar_main=side_bar_main,q=q,form=form)
 
