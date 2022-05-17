@@ -9,7 +9,17 @@
 {% block content %}
 
 <button onclick="window.location.href = '{{ url_for('create_news') }}';">Добавить</button>
+<div>
 
+<form method="POST">
+
+    <label for="title">
+            Заголовок новости:
+<input type="text" placeholder="Заголовок" id="title">
+        </label>
+    <input type="submit" value="Фильтр">
+</form>
+    </div>
 <h4>Список новостей</h4>
 <div align="left"> Заголовок Дата создания Автор</div>
 <hr>

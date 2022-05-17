@@ -11,6 +11,7 @@
 <div class="flash {{cat}}">{{msg}}</div>
 {%endfor%}
 <script src="{{ url_for('static', filename='js/create_news.js') }}"></script>
+<button onclick="window.location.href = '{{ url_for('news') }}';">Назад к списку</button>
 <form method="POST" class="form-contact" enctype=multipart/form-data name="create_news">
 {{form.hidden_tag()}}
     {% for x in form if x.name not in ['csrf_token','submit'] -%}
