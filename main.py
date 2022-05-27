@@ -232,9 +232,17 @@ def main():
 @login_required
 def news():
 
-    res = db.session.query(Users,News).join(Users,Users.login == News.login).all()
+    q = News.query.all()
 
     if request.method == "POST":
+
+        if request.form["submit"] == "Фильтр":
+
+            filter = request.form["filter"]
+
+            q = News.query.filter_by(title=filter).first()
+
+            return render_template("filter_news.html", side_bar_main=side_bar_main,q=q)
 
 
         d = request.form.keys()
@@ -247,7 +255,7 @@ def news():
         return redirect(url_for("news"))
 
 
-    return render_template("news.html",side_bar_main=side_bar_main,res=res)
+    return render_template("news.html",side_bar_main=side_bar_main,q=q)
 
 
 

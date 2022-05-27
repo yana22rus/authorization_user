@@ -23,21 +23,9 @@
 <h4>Список новостей</h4>
 <div align="left"> Заголовок Дата создания Автор</div>
 <hr>
-
-{% for x in q %}
-<table>
-    <tr>
-    <td><a href="{{ url_for('main_news',news_id=x.id) }}">{{x.title}}</a></td>
-   <td>{{x.time}} </td>
-    <td>{{x.login}}</td></a>
-    <td>
-    <button onclick="document.location='{{ url_for('update_news',news_id=x.id)}}'">Редактировать</button>
-    </td>
-    <form method="POST">
-    <td><input type="submit" value="Удалить" name="{{ x.id }}"></td>
-    </form>
-</tr>
-</table>
-{% endfor %}
-
+{% if q.title %}
+    {{ q.title }}
+{% else %}
+Ничего не найдено
+{%endif%}
 {% endblock %}
