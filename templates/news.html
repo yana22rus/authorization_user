@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-
+<script src="{{ url_for('static', filename='js/news.js') }}"></script>
 <button onclick="window.location.href = '{{ url_for('create_news') }}';">Добавить</button>
 <div>
 
@@ -34,9 +34,8 @@
     <button onclick="document.location='{{ url_for('update_news',news_id=x.id)}}'">Редактировать</button>
     </td>
     <form method="POST">
-        <input type="hidden" name="test">
-        <input type="hidden" value="{{x.id}}" name="{{x.id}}">
-    <td><input type="submit" value="Удалить" name="submit"></td>
+        <input type="hidden" id="input_form" value="" name="{{x.id}}" ><br />
+    <td><input type="submit" value="Удалить" name="submit" onclick="getId(this.id)"></td>
     </form>
 </tr>
 </table>

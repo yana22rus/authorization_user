@@ -247,7 +247,7 @@ def news():
         if request.form["submit"] == "Удалить":
 
             d = request.form.keys()
-            data,id, *b = d
+            id, *b = d
             my_data = News.query.get(id)
             db.session.delete(my_data)
             db.session.commit()
