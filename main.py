@@ -244,15 +244,15 @@ def news():
 
             return render_template("filter_news.html", side_bar_main=side_bar_main,q=q)
 
+        if request.form["submit"] == "Удалить":
 
-        d = request.form.keys()
-        id,*b= d
+            d = request.form.keys()
+            data,id, *b = d
+            my_data = News.query.get(id)
+            db.session.delete(my_data)
+            db.session.commit()
 
-        my_data = News.query.get(id)
-        db.session.delete(my_data)
-        db.session.commit()
-
-        return redirect(url_for("news"))
+            return redirect(url_for("news"))
 
 
     return render_template("news.html",side_bar_main=side_bar_main,q=q)

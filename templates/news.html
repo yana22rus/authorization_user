@@ -34,7 +34,9 @@
     <button onclick="document.location='{{ url_for('update_news',news_id=x.id)}}'">Редактировать</button>
     </td>
     <form method="POST">
-    <td><input type="submit" value="Удалить" name="{{ x.id }}"></td>
+        <input type="hidden" name="test">
+        <input type="hidden" value="{{x.id}}" name="{{x.id}}">
+    <td><input type="submit" value="Удалить" name="submit"></td>
     </form>
 </tr>
 </table>

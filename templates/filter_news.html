@@ -24,7 +24,20 @@
 <div align="left"> Заголовок Дата создания Автор</div>
 <hr>
 {% if q.title %}
-    {{ q.title }}
+<table>
+<tr>
+    <td><a href="{{ url_for('main_news',news_id=q.id) }}">{{q.title}}</a></td>
+    <td>{{ q.time }}</td>
+    <td>{{q.login}}</td>
+    <td><button onclick="document.location='{{ url_for('update_news',news_id=q.id)}}'">Редактировать</button></td>
+
+    <form method="POST">
+        <input type="hidden" name="test">
+        <input type="hidden" value="{{q.id}}" name="{{q.id}}">
+    <td><input type="submit" value="Удалить" name="submit"></td>
+    </form>
+    </table>
+</tr>
 {% else %}
 Ничего не найдено
 {%endif%}
