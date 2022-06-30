@@ -24,7 +24,7 @@
 <div align="left"> Заголовок Дата создания Автор</div>
 <hr>
 
-{% for x in q %}
+{% for x in q.items %}
 <table>
     <tr>
     <td><a href="{{ url_for('main_news',news_id=x.id) }}">{{x.title}}</a></td>
@@ -40,5 +40,8 @@
 </tr>
 </table>
 {% endfor %}
-
+<p>
+{% if q.has_prev %}<a href="{{ url_for('news', page=q.prev_num) }}">&lt;&lt; Newer posts</a>{% else %}&lt;&lt; Newer posts{% endif %} |
+{% if q.has_next %}<a href="{{ url_for('news', page=q.next_num) }}">Next &gt;&gt;</a>{% else %}Older posts &gt;&gt;{% endif %}
+</p>
 {% endblock %}

@@ -228,11 +228,14 @@ def users():
 def main():
     return render_template("main.html",side_bar_main=side_bar_main)
 
-@app.route("/news",methods=["GET","POST"])
-@login_required
-def news():
+NEWS_PER_PAGE = 5
 
-    q = News.query.all()
+@app.route("/news",methods=["GET","POST"])
+@app.route("/news/<int:page>",methods=["GET","POST"])
+@login_required
+def news(page=1):
+
+    q = News.query.order_by(News.time.desc()).paginate(page, NEWS_PER_PAGE, error_out=False)
 
     if request.method == "POST":
 
@@ -523,4 +526,4 @@ def permission():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=5000)
