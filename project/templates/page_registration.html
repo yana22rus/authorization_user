@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block sidebar %}
+
+{% for m in side_bar %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+{% block content %}
+{% for cat,msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{%endfor%}
+<h5>Регистрация в системе</h5>
+<form method="POST" class="form-contact">
+{{form.hidden_tag()}}
+    {% for x in form if x.name not in ['csrf_token','submit'] -%}
+    <p>{{ x.label() }}
+    {% if x.errors %}
+        {{ x(class="invalid") }}
+        <span class="invalid-feedback">
+        {% for e in x.errors %}
+        {{e}}
+        {% endfor %}
+        </span>
+        {% else%}
+        {{x()}}
+        {% endif%}
+        {% endfor %}
+    </p>
+
+    <p>{{form.submit()}}</p>
+
+</form>
+{% endblock %}

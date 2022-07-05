@@ -1,81 +1,25 @@
 from datetime import datetime
 import os
-import uuid
 from getpass import getuser
 from flask import Flask,render_template,request,redirect,flash,url_for,make_response
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin,login_required,login_user,logout_user,current_user
+from data_base import *
+from flask_login import login_required,login_user,logout_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
-from forms import LoginForm,CreateNewsForm
+from forms import LoginForm
+from news.news import news
 
 UPLOAD_FOLDER = os.path.join("img","uploads")
 
 app = Flask(__name__)
+app.register_blueprint(news)
 app.secret_key = "key"
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:////home/{getuser()}/main.sqlite'
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1042 * 1042
 db = SQLAlchemy(app)
 
-login_manager = LoginManager(app)
-
-class Users(db.Model,UserMixin):
-
-    id = db.Column(db.Integer, primary_key=True)
-    login =db.Column(db.String, nullable=True)
-    email = db.Column(db.String, nullable=True)
-    password = db.Column(db.String, nullable=True)
-    time_registration = db.Column(db.String, nullable=True)
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
 
 
-login_manager = LoginManager(app)
-
-
-class News(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String, nullable=True)
-    time = db.Column(db.String, nullable=True)
-    seo_title = db.Column(db.String, nullable=True)
-    seo_description = db.Column(db.String, nullable=True)
-    title = db.Column(db.String, nullable=True)
-    subtitle = db.Column(db.String, nullable=True)
-    content_page = db.Column(db.String, nullable=True)
-    short_link = db.Column(db.String, nullable=False)
-    img = db.Column(db.String, nullable=False)
-
-
-
-class User_auth_log(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.String, nullable=True)
-    login = db.Column(db.String, nullable=True)
-
-
-class Survey(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    title_survey = db.Column(db.String, nullable=True)
-
-    survey = db.Column(db.String, nullable=True)
-
-    login = db.Column(db.String, nullable=True)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return Users.query.get(user_id)
 
 side_bar = [{"name":"Пользователи","url":"/users"},{"name":"Роли","url":"/role"},{"name":"Права доступа","url":"/permission"},{"name":"Логи авторизации","url":"/logs_authorization"}]
 
@@ -228,161 +172,7 @@ def users():
 def main():
     return render_template("main.html",side_bar_main=side_bar_main)
 
-NEWS_PER_PAGE = 5
 
-@app.route("/news",methods=["GET","POST"])
-@app.route("/news/<int:page>",methods=["GET","POST"])
-@login_required
-def news(page=1):
-
-    q = News.query.order_by(News.time.desc()).paginate(page, NEWS_PER_PAGE, error_out=False)
-
-    if request.method == "POST":
-
-        if request.form["submit"] == "Фильтр":
-
-            filter = request.form["filter"]
-
-            q = News.query.filter_by(title=filter).first()
-
-            return render_template("filter_news.html", side_bar_main=side_bar_main,q=q)
-
-        if request.form["submit"] == "Удалить":
-
-            d = request.form.keys()
-            id, *b = d
-            my_data = News.query.get(id)
-            db.session.delete(my_data)
-            db.session.commit()
-
-            return redirect(url_for("news"))
-
-
-    return render_template("news.html",side_bar_main=side_bar_main,q=q)
-
-
-
-ALLOWED_EXTENSIONS = {"png","jpg","jpeg"}
-@app.route("/create_news",methods=["GET","POST"])
-@login_required
-def create_news():
-
-    form = CreateNewsForm()
-
-    if request.method == "POST" and form.validate_on_submit():
-
-        file = request.files["file"]
-
-        file_extensions = file.filename
-
-        news = News.query.filter_by(title=request.form["title"]).first()
-
-        if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
-
-            flash("Не поддерживаемый тип файла", category='error')
-
-            return render_template("create_news.html", side_bar_main=side_bar_main,form=form)
-
-
-        elif news != None:
-
-            flash("Дублирующий заголовок новости", category='error')
-
-            return render_template("create_news.html", side_bar_main=side_bar_main,form=form)
-
-        else:
-
-            file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
-
-            file.save(os.path.join("static",UPLOAD_FOLDER,file.filename))
-
-            create_news = News(login=current_user.login,
-                               time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),seo_title=request.form["seo_title"],
-                               seo_description=request.form["seo_description"],title=request.form["title"],
-                               subtitle=request.form["subtitle"],content_page=request.form["content_page"],img=file.filename)
-
-            db.session.add(create_news)
-            db.session.flush()
-            db.session.commit()
-
-            flash("Успешно сохранено",category='success')
-
-            q = News.query.filter_by(title=request.form["title"]).first()
-
-            return redirect(f"/update_news/{q.id}")
-
-    return render_template("create_news.html",side_bar_main=side_bar_main,form=form)
-
-
-@app.route("/update_news/<int:news_id>",methods=["GET","POST"])
-@login_required
-def update_news(news_id):
-
-    q = News.query.filter_by(id=news_id).first()
-
-    form = CreateNewsForm(seo_title=q.seo_title,seo_description=q.seo_description,title=q.title,subtitle=q.subtitle,content_page=q.content_page)
-
-    if request.method == "POST" and form.validate_on_submit():
-
-        if request.form["submit"] == "Сохранить":
-
-            file = request.files["file"]
-
-            file_extensions = file.filename
-
-            if file_extensions == "":
-
-                News.query.filter_by(id=news_id).update({News.seo_title: request.form["seo_title"],
-                                                         News.seo_description: request.form["seo_description"],
-                                                         News.title: request.form["title"],
-                                                         News.subtitle: request.form["subtitle"],
-                                                         News.content_page: request.form["content_page"],
-                                                         })
-                db.session.flush()
-                db.session.commit()
-
-                flash("Успешно сохранено", category='success')
-
-                return render_template("edit_news.html", side_bar_main=side_bar_main, q=q,form=form)
-
-            else:
-
-                file.filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1].lower()}'
-
-                if file_extensions.split(".")[-1].lower() not in ALLOWED_EXTENSIONS:
-
-                    flash("Не поддерживаемый тип файла", category='error')
-
-                    return render_template("edit_news.html", side_bar_main=side_bar_main,q=q,form=form)
-
-                file.save(os.path.join("static", UPLOAD_FOLDER, file.filename))
-
-            News.query.filter_by(id=news_id).update({News.seo_title:request.form["seo_title"],
-                                                     News.seo_description: request.form["seo_description"],
-                                                     News.title:request.form["title"],
-                                                     News.subtitle:request.form["subtitle"],
-                                                     News.content_page:request.form["content_page"],
-                                                     News.img:file.filename
-                                                     })
-
-            db.session.flush()
-            db.session.commit()
-
-            flash("Успешно сохранено", category='success')
-
-    if request.method == "POST":
-
-        if request.form["submit"] == "Удалить":
-
-            my_data = News.query.get(request.form["delete"])
-
-            db.session.delete(my_data)
-
-            db.session.commit()
-
-            return redirect("/news")
-
-    return render_template("edit_news.html",side_bar_main=side_bar_main,q=q,form=form)
 
 @app.route("/main_news/<int:news_id>")
 def main_news(news_id):

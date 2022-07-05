@@ -20,9 +20,10 @@ with sqlite3.connect("main.sqlite") as con:
     seo_description STRING,
     title STRING NOT NULL,
     subtitle STRING,
-    content STRING,
+    content_page STRING,
     short_link STRING,
-    img STRING
+    img STRING,
+    is_deleted INTEGER NOT NULL
     )""")
 
     cur.execute("""CREATE TABLE IF NOT EXISTS User_auth_log(

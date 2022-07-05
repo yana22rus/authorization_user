@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block sidebar %}
+
+{% for m in side_bar_main %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+{% for cat,msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{%endfor%}
+<form method="POST" class="form-contact" enctype=multipart/form-data name="create_news">
+{{form.hidden_tag()}}
+    {% for x in form if x.name not in ['csrf_token','submit'] -%}
+    <p>{{ x.label() }}
+    {% if x.errors %}
+        {{ x(class="invalid") }}
+        <span class="invalid-feedback">
+        {% for e in x.errors %}
+        {{e}}
+        {% endfor %}
+        </span>
+        {% else%}
+        {{x()}}
+        {% endif%}
+        {% endfor %}
+    </p>
+
+    <label> Изображение
+<input type="file" name="file" required>
+</label>
+
+    <p>{{form.submit()}}</p>
+
+
+</form>
+
+
+
+{% endblock %}

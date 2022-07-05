@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block sidebar %}
+
+{% for m in side_bar_main %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<button onclick="window.location.href = '{{ url_for('create_news') }}';">Добавить</button>
+<div>
+
+<form method="POST">
+
+    <label for="filter">
+            Заголовок новости:
+<input type="text" placeholder="Заголовок" id="filter" name="filter">
+        </label>
+    <input type="submit" value="Фильтр" name="submit">
+</form>
+    </div>
+<h4>Список новостей</h4>
+<div align="left"> Заголовок Дата создания Автор</div>
+<hr>
+{% if q.title %}
+<table>
+<tr>
+    <td><a href="{{ url_for('main_news',news_id=q.id) }}">{{q.title}}</a></td>
+    <td>{{ q.time }}</td>
+    <td>{{q.login}}</td>
+    <td><button onclick="document.location='{{ url_for('update_news',news_id=q.id)}}'">Редактировать</button></td>
+
+    <form method="POST">
+        <input type="hidden" name="test">
+        <input type="hidden" value="{{q.id}}" name="{{q.id}}">
+    <td><input type="submit" value="Удалить" name="submit"></td>
+    </form>
+    </table>
+</tr>
+{% else %}
+Ничего не найдено
+{%endif%}
+{% endblock %}

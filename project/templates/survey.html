@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block sidebar %}
+
+{% for m in side_bar_main %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<button onclick="window.location.href = '{{ url_for('create_survey') }}';">Добавить</button>
+
+<h4>Список опросов Автор</h4>
+
+
+
+<form method="POST">
+{% for x in res %}
+<p>
+    <a href="{{ url_for('main_survey',survey_id=x[1].id) }}">{{ x[1].title_survey}}</a> <a href="{{ url_for('update_user',user_id=x[0].id) }}">{{x[0].login}}</a>
+    <input type="submit" value="Удалить" name="{{ x[1].id }}">
+{% endfor %}
+</p>
+</form>
+
+{% endblock %}
