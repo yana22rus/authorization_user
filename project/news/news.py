@@ -8,16 +8,7 @@ from project.models import db,News
 
 news_bp = Blueprint("news",__name__)
 
-side_bar = [{"name":"Пользователи","url":"/users"},{"name":"Роли","url":"/role"},
-            {"name":"Права доступа","url":"/permission"},
-            {"name":"Логи авторизации","url":"/logs_authorization"}]
 
-side_bar_main = [{"name":"Новости","url":"/news"},{"name":"Документы","url":"/document"},{"name":"Опрос","url":"/survey"},
-                 {"name":"Викторина","url":"/quiz"},
-                 {"name":"Структура","url":"/structure"},{"name":"Теги новостей","url":"/tag_news"},
-                 {"name":"Теги документов","url":"/tag_document"},{"name":"Фоторепортажи","url":"/photo_report"},
-                 {"name":"Видеорепортажи","url":"/video_report"},{"name":"Список опечаток","url":"/typo_repor"},
-                 ]
 UPLOAD_FOLDER = os.path.join("img","uploads")
 
 
@@ -69,4 +60,4 @@ def create_news():
 
             return redirect(f"/update_news/{q.id}")
 
-    return render_template("create_news.html",side_bar_main=side_bar_main,form=form)
+    return render_template("create_news.html",form=form)

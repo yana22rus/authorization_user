@@ -6,12 +6,11 @@ from data_base import *
 from flask_login import login_required,login_user,logout_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from forms import LoginForm
-from news.news import news
 
 UPLOAD_FOLDER = os.path.join("img","uploads")
 
 app = Flask(__name__)
-app.register_blueprint(news)
+
 app.secret_key = "key"
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:////home/{getuser()}/main.sqlite'
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER

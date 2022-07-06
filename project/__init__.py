@@ -10,6 +10,20 @@ app.secret_key = "key"
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:////home/{getuser()}/main.sqlite'
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1042 * 1042
+
+footer = [{"name":"Пользователи","url":"/users"},{"name":"Роли","url":"/role"},
+            {"name":"Права доступа","url":"/permission"},
+            {"name":"Логи авторизации","url":"/logs_authorization"}]
+
+side_bar = [{"name":"Новости","url":"/news"},{"name":"Документы","url":"/document"},{"name":"Опрос","url":"/survey"},
+                 {"name":"Викторина","url":"/quiz"},
+                 {"name":"Структура","url":"/structure"},{"name":"Теги новостей","url":"/tag_news"},
+                 {"name":"Теги документов","url":"/tag_document"},{"name":"Фоторепортажи","url":"/photo_report"},
+                 {"name":"Видеорепортажи","url":"/video_report"},{"name":"Список опечаток","url":"/typo_repor"},
+                 ]
+
+app.jinja_env.globals.update(footer=footer)
+app.jinja_env.globals.update(side_bar=side_bar)
 db = SQLAlchemy(app)
 
 from project.news.news import news_bp
