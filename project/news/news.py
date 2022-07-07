@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 import uuid
-from flask import Blueprint,render_template,flash,request,redirect
+from flask import Blueprint,render_template,flash,request,redirect,url_for
 from project.forms import CreateNewsForm
 from project.models import db,News
 
@@ -10,6 +10,37 @@ news_bp = Blueprint("news",__name__)
 
 
 UPLOAD_FOLDER = os.path.join("img","uploads")
+
+NEWS_PER_PAGE = 5
+
+@news_bp.route("/news",methods=["GET","POST"])
+@news_bp.route("/news/<int:page>",methods=["GET","POST"])
+def news(page=1):
+
+    q = News.query.order_by(News.time.desc()).paginate(page, NEWS_PER_PAGE, error_out=False)
+
+    if request.method == "POST":
+
+        if request.form["submit"] == "Фильтр":
+
+            filter = request.form["filter"]
+
+            q = News.query.filter_by(title=filter).first()
+
+            return render_template("filter_news.html", q=q)
+
+        if request.form["submit"] == "Удалить":
+
+            d = request.form.keys()
+            id, *b = d
+            my_data = News.query.get(id)
+            db.session.delete(my_data)
+            db.session.commit()
+
+            return redirect(url_for("news"))
+
+
+    return render_template("news.html",q=q)
 
 
 ALLOWED_EXTENSIONS = {"png","jpg","jpeg"}
@@ -30,14 +61,14 @@ def create_news():
 
             flash("Не поддерживаемый тип файла", category='error')
 
-            return render_template("create_news.html", side_bar_main=side_bar_main,form=form)
+            return render_template("create_news.html", form=form)
 
 
         elif news != None:
 
             flash("Дублирующий заголовок новости", category='error')
 
-            return render_template("create_news.html", side_bar_main=side_bar_main,form=form)
+            return render_template("create_news.html", form=form)
 
         else:
 
