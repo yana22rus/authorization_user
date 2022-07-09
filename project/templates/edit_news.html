@@ -23,10 +23,9 @@
 <button onclick="window.location.href = '{{ url_for('.news') }}';">Назад к списку</button>
 <button onclick="window.location.href = '{{ url_for('.create_news') }}';">Добавить</button>
 <script src="{{ url_for('static', filename='js/create_news.js') }}"></script>
-        <form method="POST">
-            <input type="submit" name="submit" value="Удалить">
-            <input type="text" value="{{q.id}}" name="delete" hidden>
-        </form>
+    <form method="POST">
+    <input type="submit" value="Удалить" name="submit">
+    </form>
 <form method="POST" class="form-contact" enctype=multipart/form-data name="create_news">
 {{form.hidden_tag()}}
     {% for x in form if x.name not in ['csrf_token','submit'] -%}

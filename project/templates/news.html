@@ -41,6 +41,7 @@
     <td><a href="{{ url_for('.main_news',news_id=x.id) }}">{{x.title}}</a></td>
    <td>{{x.time}} </td>
     <td>{{x.login}}</td></a>
+        {%if x.is_deleted == 0 %}
     <td>
     <button onclick="document.location='{{ url_for('.update_news',news_id=x.id)}}'">Редактировать</button>
     </td>
@@ -48,6 +49,12 @@
         <input type="hidden" id="input_form" value="" name="{{x.id}}" ><br />
     <td><input type="submit" value="Удалить" name="submit" onclick="getId(this.id)"></td>
     </form>
+        {% else %}
+    <form method="POST">
+        <input type="hidden" id="restore" value="" name="{{x.id}}" ><br />
+    <td><input type="submit" value="Восстановить" name="submit" onclick="getId(this.id)"></td>
+    </form>
+{%endif%}
 </tr>
 </table>
 {% endfor %}

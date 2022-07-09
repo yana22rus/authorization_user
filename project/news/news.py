@@ -32,8 +32,19 @@ def news(page=1):
         if request.form["submit"] == "Удалить":
             d = request.form.keys()
             id, *b = d
-            my_data = News.query.get(id)
-            db.session.delete(my_data)
+
+            News.query.filter_by(id=id).update({News.is_deleted: "1"})
+            db.session.flush()
+            db.session.commit()
+
+            return redirect(url_for(".news"))
+
+        if request.form["submit"] == "Восстановить":
+            d = request.form.keys()
+            id, *b = d
+
+            News.query.filter_by(id=id).update({News.is_deleted: "0"})
+            db.session.flush()
             db.session.commit()
 
             return redirect(url_for(".news"))
@@ -156,13 +167,11 @@ def update_news(news_id):
     if request.method == "POST":
 
         if request.form["submit"] == "Удалить":
-            my_data = News.query.get(request.form["delete"])
-
-            db.session.delete(my_data)
-
+            News.query.filter_by(id=news_id).update({News.is_deleted: "1"})
+            db.session.flush()
             db.session.commit()
 
-            return redirect("/news")
+            return redirect(url_for(".news"))
 
     return render_template("edit_news.html",  q=q, form=form)
 
