@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 import uuid
-from flask import Blueprint, render_template, flash, request, redirect, url_for
+from flask import Blueprint, render_template, flash, request, redirect, url_for,abort
 from project.forms import CreateNewsForm
 from project.models import db, News
 
@@ -10,6 +10,10 @@ news_bp = Blueprint("news", __name__)
 NEWS_PER_PAGE = 5
 
 UPLOAD_FOLDER = os.path.join("img","uploads")
+
+@news_bp.errorhandler(404)
+def page_not_found(e):
+    return "404", 404
 
 @news_bp.route("/news", methods=["GET", "POST"])
 @news_bp.route("/news/<int:page>", methods=["GET", "POST"])
@@ -92,7 +96,12 @@ def create_news():
 
 @news_bp.route("/update_news/<int:news_id>", methods=["GET", "POST"])
 def update_news(news_id):
+
     q = News.query.filter_by(id=news_id).first()
+
+    if q == None:
+
+        abort(404)
 
     form = CreateNewsForm(seo_title=q.seo_title, seo_description=q.seo_description, title=q.title, subtitle=q.subtitle,
                           content_page=q.content_page)
