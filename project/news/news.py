@@ -110,7 +110,7 @@ def update_news(news_id):
 
     q = News.query.filter_by(id=news_id).first()
 
-    if q == None:
+    if q == None or q.is_deleted == 1:
 
         abort(404)
 
@@ -179,5 +179,9 @@ def update_news(news_id):
 @news_bp.route("/main_news/<int:news_id>")
 def main_news(news_id):
     news = News.query.filter_by(id=news_id).first()
+
+    if news == None or news.is_deleted == 1:
+
+        abort(404)
 
     return render_template("main_news.html", news=news)
