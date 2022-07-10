@@ -27,6 +27,8 @@ app.jinja_env.globals.update(side_bar=side_bar)
 db = SQLAlchemy(app)
 
 from project.news.news import news_bp
+from project.tag_news.tag_news import tag_news_bp
 app.register_blueprint(news_bp)
+app.register_blueprint(tag_news_bp)
 
 app.run(debug=True)

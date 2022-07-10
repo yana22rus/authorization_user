@@ -24,3 +24,10 @@ class CreateNewsForm(FlaskForm):
 
     submit = SubmitField("Сохранить",name="submit")
 
+
+class CreateTagNews(FlaskForm):
+
+    title = StringField("Заголовок",validators=[Length(min=4, max=255, message="Заголовок должен быть от 4 до 255 символов")],name="title")
+
+    submit = SubmitField("Сохранить",name="submit")
+

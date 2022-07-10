@@ -1,6 +1,7 @@
 import sqlite3
+from getpass import getuser
 
-with sqlite3.connect("main.sqlite") as con:
+with sqlite3.connect(f"/home/{getuser()}/main.sqlite") as con:
 
     cur = con.cursor()
 
@@ -24,6 +25,13 @@ with sqlite3.connect("main.sqlite") as con:
     short_link STRING,
     img STRING,
     is_deleted INTEGER NOT NULL
+    )""")
+
+    cur.execute("""CREATE TABLE IF NOT EXISTS Tag_news(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    login STRING NOT NULL,
+    time  STRING NOT NULL,
+    title STRING NOT NULL
     )""")
 
     cur.execute("""CREATE TABLE IF NOT EXISTS User_auth_log(

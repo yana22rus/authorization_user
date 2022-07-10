@@ -35,6 +35,15 @@ class News(db.Model):
     is_deleted = db.Column(db.Integer, nullable=False)
 
 
+class Tag_news(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    login = db.Column(db.String, nullable=True)
+    time = db.Column(db.String, nullable=True)
+    title = db.Column(db.String, nullable=True)
+
+
+
 
 class User_auth_log(db.Model):
 
