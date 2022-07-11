@@ -18,35 +18,36 @@
 
 {% block content %}
 
-<button onclick="window.location.href = '{{ url_for('.create_news') }}';">Добавить</button>
+<button onclick="window.location.href = '{{ url_for('.create_tag_news') }}';">Добавить</button>
 <div>
 
 <form method="POST">
 
     <label for="filter">
-            Заголовок новости:
+            Заголовок:
 <input type="text" placeholder="Заголовок" id="filter" name="filter">
         </label>
     <input type="submit" value="Фильтр" name="submit">
 </form>
     </div>
-<h4>Список новостей</h4>
+<h4>Список тегов</h4>
 <div align="left"> Заголовок Дата создания Автор</div>
 <hr>
 {% if q.title %}
 <table>
 <tr>
-    <td><a href="{{ url_for('.main_news',news_id=q.id) }}">{{q.title}}</a></td>
+            <td><a href="{{ url_for('.update_tag_news',tag_news_id=q.id)}}">{{q.title}}</a></td>
     <td>{{ q.time }}</td>
     <td>{{q.login}}</td>
-    <td><button onclick="document.location='{{ url_for('.update_news',news_id=q.id)}}'">Редактировать</button></td>
+    <td><button onclick="document.location='{{ url_for('.update_tag_news',tag_news_id=q.id)}}'">Редактировать</button></td>
 
     <form method="POST">
         <input type="hidden" id="input_form" value="" name="{{q.id}}" ><br />
     <td><input type="submit" value="Удалить" name="submit" onclick="getId(this.id)"></td>
     </form>
+    </tr>
     </table>
-</tr>
+
 {% else %}
 Ничего не найдено
 {%endif%}

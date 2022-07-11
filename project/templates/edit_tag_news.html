@@ -22,8 +22,8 @@
 {%endfor%}
 <button onclick="window.location.href = '{{ url_for('.show_tag_news') }}';">Назад к списку</button>
 <button onclick="window.location.href = '{{ url_for('.create_tag_news') }}';">Добавить</button>
-<script src="{{ url_for('static', filename='js/create_news.js') }}"></script>
     <form method="POST">
+
     <input type="submit" value="Удалить" name="submit">
     </form>
 <form method="POST" class="form-contact" name="create_tag_news">

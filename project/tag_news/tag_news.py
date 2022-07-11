@@ -21,6 +21,13 @@ def show_tag_news(page=1):
 
     if request.method == "POST":
 
+        if request.form["submit"] == "Фильтр":
+            filter = request.form["filter"]
+
+            q = Tag_news.query.filter_by(title=filter).first()
+
+            return render_template("filter_tag_news.html", q=q)
+
         if request.form["submit"] == "Удалить":
             d = request.form.keys()
             id, *b = d
@@ -68,7 +75,19 @@ def create_tag_news():
 def update_tag_news(tag_news_id):
     q = Tag_news.query.filter_by(id=tag_news_id).first()
 
+    if q == None:
+
+        abort(404)
+
     form = CreateTagNews(title=q.title)
+
+    if request.method == "POST":
+
+        if request.form["submit"] == "Удалить":
+            my_data = Tag_news.query.get(tag_news_id)
+            db.session.delete(my_data)
+            db.session.commit()
+            return redirect(url_for(".show_tag_news"))
 
     if request.method == "POST" and form.validate_on_submit():
 
@@ -77,7 +96,6 @@ def update_tag_news(tag_news_id):
             q_title = Tag_news.query.filter_by(title=request.form["title"]).first()
 
             if q_title != None:
-
                 flash("Дублирующий заголовок", category='error')
 
                 return render_template("edit_tag_news.html", q=q, form=form)
