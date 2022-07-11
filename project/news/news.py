@@ -17,7 +17,7 @@ def page_not_found(e):
 
 @news_bp.route("/news", methods=["GET", "POST"])
 @news_bp.route("/news/<int:page>", methods=["GET", "POST"])
-def news(page=1):
+def show_news(page=1):
     q = News.query.order_by(News.time.desc()).paginate(page, NEWS_PER_PAGE, error_out=False)
 
     if request.method == "POST":
@@ -37,7 +37,7 @@ def news(page=1):
             db.session.flush()
             db.session.commit()
 
-            return redirect(url_for(".news"))
+            return redirect(url_for(".show_news"))
 
         if request.form["submit"] == "Восстановить":
             d = request.form.keys()
@@ -47,7 +47,7 @@ def news(page=1):
             db.session.flush()
             db.session.commit()
 
-            return redirect(url_for(".news"))
+            return redirect(url_for(".show_news"))
 
     return render_template("news.html", q=q)
 
@@ -121,6 +121,14 @@ def update_news(news_id):
 
         if request.form["submit"] == "Сохранить":
 
+            q_title = News.query.filter_by(title=request.form["title"]).first()
+
+            if q_title != None:
+
+                flash("Дублирующий заголовок", category='error')
+
+                return render_template("edit_news.html", q=q, form=form)
+
             file = request.files["file"]
 
             file_extensions = file.filename
@@ -171,7 +179,7 @@ def update_news(news_id):
             db.session.flush()
             db.session.commit()
 
-            return redirect(url_for(".news"))
+            return redirect(url_for(".show_news"))
 
     return render_template("edit_news.html",  q=q, form=form)
 

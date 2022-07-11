@@ -44,11 +44,17 @@
             <td>
     <button onclick="document.location='{{ url_for('.update_tag_news',tag_news_id=x.id)}}'">Редактировать</button>
     </td>
+
+    <form method="POST">
+        <input type="hidden" id="input_form" value="" name="{{x.id}}" ><br />
+    <td><input type="submit" value="Удалить" name="submit" onclick="getId(this.id)"></td>
+    </form>
+</td>
         </tr>
 </table>
 {% endfor %}
 <p>
-{% if q.has_prev %}<a href="{{ url_for('.tag_news', page=q.prev_num) }}">&lt;&lt; Newer posts</a>{% else %}&lt;&lt; Newer posts{% endif %} |
-{% if q.has_next %}<a href="{{ url_for('.tag_news', page=q.next_num) }}">Next &gt;&gt;</a>{% else %}Older posts &gt;&gt;{% endif %}
+{% if q.has_prev %}<a href="{{ url_for('.show_tag_news', page=q.prev_num) }}">&lt;&lt; Newer posts</a>{% else %}&lt;&lt; Newer posts{% endif %} |
+{% if q.has_next %}<a href="{{ url_for('.show_tag_news', page=q.next_num) }}">Next &gt;&gt;</a>{% else %}Older posts &gt;&gt;{% endif %}
 </p>
 {% endblock %}
