@@ -33,6 +33,7 @@ class News(db.Model):
     short_link = db.Column(db.String, nullable=False)
     img = db.Column(db.String, nullable=False)
     is_deleted = db.Column(db.Integer, nullable=False)
+    tag_news = db.Column(db.String, nullable=False)
 
 
 class Tag_news(db.Model):

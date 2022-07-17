@@ -1,7 +1,18 @@
 import sqlite3
 from getpass import getuser
+from os import remove
 
-with sqlite3.connect(f"/home/{getuser()}/main.sqlite") as con:
+path = f"/home/{getuser()}/main.sqlite"
+
+try:
+
+    remove(path)
+
+except Exception:
+
+    pass
+
+with sqlite3.connect(path) as con:
 
     cur = con.cursor()
 
@@ -24,7 +35,8 @@ with sqlite3.connect(f"/home/{getuser()}/main.sqlite") as con:
     content_page STRING,
     short_link STRING,
     img STRING,
-    is_deleted INTEGER NOT NULL
+    is_deleted INTEGER NOT NULL,
+    tag_news STRING
     )""")
 
     cur.execute("""CREATE TABLE IF NOT EXISTS Tag_news(

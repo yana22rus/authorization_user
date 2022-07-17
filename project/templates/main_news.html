@@ -19,11 +19,14 @@
 <body>
 
 
-<div class="image">
+<div class="image" align="center">
 <img src="/static/img/uploads/{{news.img}}" width="33%" height="33%">
 <h2>{{news.title}}</h2>
 </div>
 <h3>{{news.subtitle}}</h3>
 <h3>{{news.content}}</h3>
+{% for x in lst_tag_data %}
+<div align="right"><button>#{{x}}</button></div>
+{% endfor %}
 </body>
 </html>

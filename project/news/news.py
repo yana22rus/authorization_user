@@ -1,9 +1,11 @@
+import json
 import os
 from datetime import datetime
 import uuid
 from flask import Blueprint, render_template, flash, request, redirect, url_for,abort
 from project.forms import CreateNewsForm
-from project.models import db, News
+from project.models import db, News,Tag_news
+import pickle
 
 news_bp = Blueprint("news", __name__)
 
@@ -59,6 +61,8 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 def create_news():
     form = CreateNewsForm()
 
+    q_tag = Tag_news.query.all()
+
     if request.method == "POST" and form.validate_on_submit():
 
         file = request.files["file"]
@@ -71,14 +75,14 @@ def create_news():
 
             flash("Не поддерживаемый тип файла", category='error')
 
-            return render_template("create_news.html", form=form)
+            return render_template("create_news.html", form=form,q_tag=q_tag)
 
 
         elif news != None:
 
             flash("Дублирующий заголовок новости", category='error')
 
-            return render_template("create_news.html",  form=form)
+            return render_template("create_news.html",  form=form,q_tag=q_tag)
 
         else:
 
@@ -90,7 +94,7 @@ def create_news():
                                time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), seo_title=request.form["seo_title"],
                                seo_description=request.form["seo_description"], title=request.form["title"],
                                subtitle=request.form["subtitle"], content_page=request.form["content_page"],
-                               img=file.filename,is_deleted="0")
+                               img=file.filename,is_deleted="0",tag_news=json.dumps(request.form.getlist("multiple")))
 
             db.session.add(create_news)
             db.session.flush()
@@ -102,7 +106,7 @@ def create_news():
 
             return redirect(f"/update_news/{q.id}")
 
-    return render_template("create_news.html",  form=form)
+    return render_template("create_news.html",  form=form,q_tag=q_tag)
 
 
 @news_bp.route("/update_news/<int:news_id>", methods=["GET", "POST"])
@@ -188,8 +192,13 @@ def update_news(news_id):
 def main_news(news_id):
     news = News.query.filter_by(id=news_id).first()
 
+
+    lst_tag_data = json.loads(news.tag_news)
+
+
+
     if news == None or news.is_deleted == 1:
 
         abort(404)
 
-    return render_template("main_news.html", news=news)
+    return render_template("main_news.html", news=news,lst_tag_data=lst_tag_data)

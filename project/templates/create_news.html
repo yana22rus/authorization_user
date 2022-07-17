@@ -44,7 +44,11 @@
     </label>
 
     <p>{{form.submit()}}</p>
-
+<select multiple="multiple" name="multiple">
+    {% for x in q_tag %}
+    <option value={{x.title}}>{{x.title}}</option>
+    {% endfor %}
+</select>
 
 </form>
 
