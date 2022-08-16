@@ -39,6 +39,17 @@ with sqlite3.connect(path) as con:
     tag_news STRING
     )""")
 
+    cur.execute("""CREATE TABLE IF NOT EXISTS Quiz (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    login STRING NOT NULL,
+    time  STRING NOT NULL,
+    seo_title STRING,
+    seo_description STRING,
+    title STRING NOT NULL,
+    subtitle STRING,
+    question_answers STRING NOT NULL
+    )""")
+
     cur.execute("""CREATE TABLE IF NOT EXISTS Tag_news(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     login STRING NOT NULL,

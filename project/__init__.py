@@ -28,7 +28,9 @@ db = SQLAlchemy(app)
 
 from project.news.news import news_bp
 from project.tag_news.tag_news import tag_news_bp
+from project.quiz.quiz import quiz_bp
 app.register_blueprint(news_bp)
 app.register_blueprint(tag_news_bp)
+app.register_blueprint(quiz_bp)
 
 app.run(debug=True)

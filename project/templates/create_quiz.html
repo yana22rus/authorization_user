@@ -8,13 +8,27 @@
 
 {% block content %}
 <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
-<form method="POST" id="test">
+<form method="POST" class="form-contact" enctype=multipart/form-data name="create_news">
+    {{form.hidden_tag()}}
+    {% for x in form if x.name not in ['csrf_token','submit'] -%}
+    <p>{{ x.label() }}
+        {% if x.errors %}
+        {{ x(class="invalid") }}
+        <span class="invalid-feedback">
+        {% for e in x.errors %}
+        {{e}}
+        {% endfor %}
+        </span>
+        {% else%}
+        {{x()}}
+        {% endif%}
+        {% endfor %}
     <div id="div">
 <input type="button" value="Добавить вопрос" onclick="add()">
 <input type="button" value="Удалить вопрос" onclick="del()">
-        <input type="submit">
 
         </div>
+        <p>{{form.submit()}}</p>
 </form>
 
 

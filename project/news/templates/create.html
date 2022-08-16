@@ -1,27 +1,32 @@
 {% extends 'base.html' %}
+
+
+{% block footer %}
+
+{% for m in footer %}
+<a href="{{m.url}}">{{m.name}}</a>
+{% endfor %}
+
+{% endblock %}
+
 {% block sidebar %}
 
-{% for m in side_bar_main %}
+
+{% for m in side_bar %}
 <p><a href="{{m.url}}">{{m.name}}</a></p>
 {% endfor %}
+
 {% endblock %}
 
 {% block content %}
 {% for cat,msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
 {%endfor%}
-<button onclick="window.location.href = '{{ url_for('news') }}';">Назад к списку</button>
-<button onclick="window.location.href = '{{ url_for('create_news') }}';">Добавить</button>
-<script src="{{ url_for('static', filename='js/create_news.js') }}"></script>
-        <form method="POST">
-            <input type="submit" name="submit" value="Удалить">
-            <input type="text" value="{{q.id}}" name="delete" hidden>
-        </form>
 <form method="POST" class="form-contact" enctype=multipart/form-data name="create_news">
-{{form.hidden_tag()}}
+    {{form.hidden_tag()}}
     {% for x in form if x.name not in ['csrf_token','submit'] -%}
     <p>{{ x.label() }}
-    {% if x.errors %}
+        {% if x.errors %}
         {{ x(class="invalid") }}
         <span class="invalid-feedback">
         {% for e in x.errors %}
@@ -34,13 +39,18 @@
         {% endfor %}
     </p>
 
-<label> Изображение
-<img src="/static/img/uploads/{{q.img}}" width="33%" height="33%">
-<input type="file" name="file">
-
-</label>
+    <label> Изображение
+        <input type="file" name="file" required>
+    </label>
 
     <p>{{form.submit()}}</p>
+<select multiple="multiple" name="multiple">
+    {% for x in q_tag %}
+    <option value={{x.title}}>{{x.title}}</option>
+    {% endfor %}
+</select>
 
 </form>
+
+
 {% endblock %}

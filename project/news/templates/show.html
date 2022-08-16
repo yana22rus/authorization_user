@@ -1,14 +1,25 @@
 {% extends 'base.html' %}
-{% block sidebar %}
 
-{% for m in side_bar_main %}
-<p><a href="{{m.url}}">{{m.name}}</a></p>
+
+{% block footer %}
+
+{% for m in footer %}
+<a href="{{m.url}}">{{m.name}}</a>
 {% endfor %}
+
 {% endblock %}
 
+{% block sidebar %}
+
+
+{% for m in side_bar %}
+<p><a href="{{m.url}}">{{m.name}}</a></p>
+{% endfor %}
+
+{% endblock %}
 {% block content %}
 <script src="{{ url_for('static', filename='js/news.js') }}"></script>
-<button onclick="window.location.href = '{{ url_for('create_news') }}';">Добавить</button>
+<button onclick="window.location.href = '{{ url_for('.create') }}';">Добавить</button>
 <div>
 
 <form method="POST">
@@ -27,21 +38,28 @@
 {% for x in q.items %}
 <table>
     <tr>
-    <td><a href="{{ url_for('main_news',news_id=x.id) }}">{{x.title}}</a></td>
+    <td><a href="{{ url_for('.main_news',news_id=x.id) }}">{{x.title}}</a></td>
    <td>{{x.time}} </td>
     <td>{{x.login}}</td></a>
+        {%if x.is_deleted == 0 %}
     <td>
-    <button onclick="document.location='{{ url_for('update_news',news_id=x.id)}}'">Редактировать</button>
+    <button onclick="document.location='{{ url_for('.update',news_id=x.id)}}'">Редактировать</button>
     </td>
     <form method="POST">
         <input type="hidden" id="input_form" value="" name="{{x.id}}" ><br />
     <td><input type="submit" value="Удалить" name="submit" onclick="getId(this.id)"></td>
     </form>
+        {% else %}
+    <form method="POST">
+        <input type="hidden" id="restore" value="" name="{{x.id}}" ><br />
+    <td><input type="submit" value="Восстановить" name="submit"></td>
+    </form>
+{%endif%}
 </tr>
 </table>
 {% endfor %}
 <p>
-{% if q.has_prev %}<a href="{{ url_for('news', page=q.prev_num) }}">&lt;&lt; Newer posts</a>{% else %}&lt;&lt; Newer posts{% endif %} |
-{% if q.has_next %}<a href="{{ url_for('news', page=q.next_num) }}">Next &gt;&gt;</a>{% else %}Older posts &gt;&gt;{% endif %}
+{% if q.has_prev %}<a href="{{ url_for('.show', page=q.prev_num) }}">&lt;&lt; Newer posts</a>{% else %}&lt;&lt; Newer posts{% endif %} |
+{% if q.has_next %}<a href="{{ url_for('.show', page=q.next_num) }}">Next &gt;&gt;</a>{% else %}Older posts &gt;&gt;{% endif %}
 </p>
 {% endblock %}
